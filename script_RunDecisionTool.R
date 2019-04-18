@@ -10,7 +10,6 @@ library(maptools)
 ## set working directory
 HD=here::here()
 # HD="C:/Lobsters/RightWhales/DecisionSupportTool"
-
 ## source decision support function
 source(paste(HD, "function_DecisionSupportTool_V1.2.R", sep="/"))
 

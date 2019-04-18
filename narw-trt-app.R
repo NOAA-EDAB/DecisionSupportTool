@@ -1,10 +1,19 @@
 library(shinydashboard)
 library(htmlwidgets)
 library(rhandsontable)
+# from Burtons Code
+library(rgdal)
+library(sp)
+library(maps)
+library(maptools)
+library(grid)
+library(gtable)
+library(gridExtra)
+library(maptools)
 
 r.dir <- here::here("R")
 source(file.path(r.dir,"model-specs.R"))
-
+source(here::here("function_DecisionSupportTool_V1.2.R"))
 
 ui <- dashboardPage(
   dashboardHeader(title = "ALW TRT Scenario Planning", titleWidth = 300),
@@ -72,6 +81,7 @@ server <- function(input, output) {
       write.csv(param, 
                 file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), row.names = F)
       print("Saved.")
+      run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
     }
     
     
