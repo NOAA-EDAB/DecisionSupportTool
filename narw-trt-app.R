@@ -1,7 +1,6 @@
 library(shinydashboard)
 library(htmlwidgets)
 library(rhandsontable)
-# from Burtons Code
 library(rgdal)
 library(sp)
 library(maps)
@@ -11,6 +10,7 @@ library(gtable)
 library(gridExtra)
 library(maptools)
 
+#Source helper functions
 r.dir <- here::here("R")
 source(file.path(r.dir,"model-specs.R"))
 source(here::here("function_DecisionSupportTool_V1.2.R"))
@@ -58,10 +58,11 @@ ui <- dashboardPage(
 
 server <- function(input, output) {
   output$hot = renderRHandsontable({
+    
     rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
       hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
       hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
-      hot_col(col = "States", type = "autocomplete", source = States) %>% 
+      hot_col(col = "State", type = "autocomplete", source = State) %>% 
       hot_col(col = "Fishery", type = "autocomplete", source = Fishery) %>% 
       hot_col(col = "StatArea", type = "autocomplete", source = StatArea) %>% 
       hot_col(col = "TrapRedistributionArea", type = "autocomplete", source = TrapRedistributionArea) %>% 
@@ -74,8 +75,9 @@ server <- function(input, output) {
   
   observeEvent(input$run, {
     
-    param <- hot_to_r(input$hot)
+    param <- hot_to_r(input$hot) 
     param[is.na(param)] <- ""
+    param <- param %>% filter(Action != "")
     
     if (is.null(input$filename)){
       warning("Enter filename for scenario run.")
