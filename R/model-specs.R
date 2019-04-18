@@ -10,7 +10,7 @@ LMA <- c("All",
           "A2",
           "A2_3overlap",
           "A3")
-States <- c("All",
+State <- c("All",
             "ME",
             "NH",
             "MA")
@@ -39,11 +39,11 @@ Shapefile <- ""
 #Data frame to hold 
 DF <- data.frame(Action = as.character(rep(NA,10)),
                  LMA = as.character(rep(NA, 10)),
-                 States = as.character(rep(NA, 10)),
-                 Fishery = as.character(rep(NA, 10)),
+                 State = as.character(rep(NA, 10)),
                  StatArea = as.character(rep(NA, 10)),
-                 TrapRedistributionArea = as.character(rep(NA, 10)),
-                 TrapRedistributionMethod = as.character(rep(NA, 10)),
+                 Fishery = as.character(rep(NA, 10)),
+                 Shapefile = as.character(rep(NA, 10)),
                  Months = as.character(rep(NA, 10)),
                  Percentage = as.character(rep(NA, 10)),
-                 Shapefile = as.character(rep(NA, 10)))
+                 TrapRedistributionArea = as.character(rep(NA, 10)),
+                 TrapRedistributionMethod = as.character(rep(NA, 10)))
