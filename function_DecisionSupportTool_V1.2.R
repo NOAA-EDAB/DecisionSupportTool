@@ -172,10 +172,11 @@ DecisionTool=function(
   
   ## read in input spreadsheet
   ScenarioInputs=read.csv(
-    paste("InputSpreadsheets", ## subdirectory
+    paste(HomeDir, 
+          "InputSpreadsheets", ## subdirectory
           InputSpreadsheetName, ## file name
           sep="/"), stringsAsFactors=FALSE, na.strings=""); ScenarioInputs
-  
+
   # ScenarioInputs$LMA[ScenarioInputs$LMA==""]=NA
   # ScenarioInputs$State[ScenarioInputs$State==""]=NA
   # ScenarioInputs$StatArea[ScenarioInputs$StatArea==""]=NA
