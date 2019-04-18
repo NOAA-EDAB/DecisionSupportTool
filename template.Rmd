@@ -1,0 +1,147 @@
+---
+output: pdf_document
+params: 
+    set_title: "My Title!"
+    set_path: "`r params$set_path`"
+title: "`r params$set_title`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+## Scenarios
+
+```{r, include = FALSE}
+library(knitr)
+# OutputDir <- here::here("Scenarios/ExampleRun2/")
+ScenarioInputs <- read.csv(paste(here::here("InputSpreadsheets"), ## subdirectory
+                                 InputSpreadsheetName, ## file name
+                                 sep="/"),
+                           stringsAsFactors=FALSE, na.strings="")
+
+knitr::kable(ScenarioInputs)
+```
+
+## Figures
+
+```{r, include = TRUE}
+OutputDir <- here::here("Scenarios", OutputDir, "/")
+
+fig_list <- list.files(OutputDir, pattern = ".png", full.names = TRUE)
+
+```
+
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.cap="caption",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map1.*TrapDensity.png$", fig_list, value = TRUE))
+
+```
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.cap="caption",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map1.*Log.png$", fig_list, value = TRUE))
+
+```
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map2.*TrapDensity.png$", fig_list, value = TRUE))
+
+```
+
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map2.*Log.png$", fig_list, value = TRUE))
+
+```
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map3.*TrawlLength.png$", fig_list, value = TRUE))
+
+```
+
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map4.*Density.png$", fig_list, value = TRUE))
+
+```
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map4.*DensityLog.png$", fig_list, value = TRUE))
+```
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map6.*png$", fig_list, value = TRUE))
+
+```
+
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map8.*MeanThreat.png$", fig_list, value = TRUE))
+
+```
+
+
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map8.*TotalThreat.png$", fig_list, value = TRUE))
+
+```
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map8.*TotalThreatLog.png$", fig_list, value = TRUE))
+
+```
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map9.*RiskScore.png$", fig_list, value = TRUE))
+
+```
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map9.*RiskScoreLog.png$", fig_list, value = TRUE))
+
+```
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map9.*Habitat.png$", fig_list, value = TRUE))
+
+```
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+
+knitr::include_graphics(grep("map9.*Log.png$", fig_list, value = TRUE))
+
+```
+
+
+
+    # 
+    # 
+    # # map2dTrapDensity ## post reduction
+    # # map2dTrapDensityLog ## post reduction
+    # 
+    # map3dTrawlLength
+    # 
+    # map4dLineDensity
+    # map4dLineDensityLog
+    # 
+    # map6dLineDia
+    # 
+    # map8dMeanThreat
+    # map8dTotalThreat
+    # map8dTotalThreatLog
+    # 
+    # map9WhaleHabitat
+    # map9WhaleHabitatLog
+    # 
+    # map9dRiskScore
+    # map9dRiskScoreLog
