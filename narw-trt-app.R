@@ -63,13 +63,15 @@ server <- function(input, output) {
       hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
       hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
       hot_col(col = "State", type = "autocomplete", source = State) %>% 
-      hot_col(col = "Fishery", type = "autocomplete", source = Fishery) %>% 
       hot_col(col = "StatArea", type = "autocomplete", source = StatArea) %>% 
-      hot_col(col = "TrapRedistributionArea", type = "autocomplete", source = TrapRedistributionArea) %>% 
-      hot_col(col = "TrapRedistributionMethod", type = "autocomplete", source = TrapRedistributionMethod) %>% 
-      hot_col(col = "Months", type = "autocomplete", source = Months) %>% 
+      hot_col(col = "Fishery", type = "autocomplete", source = Fishery) %>% 
+      hot_col(col = "Shapefile", strict = F, type = "autocomplete") %>% 
+      hot_col(col = "Months", type = "autocomplete", source = Months) %>%
       hot_col(col = "Percentage", type = "numeric", strict = F) %>% 
-      hot_col(col = "Shapefile", strict = F, type = "autocomplete")
+      hot_col(col = "TrapRedistributionArea", type = "autocomplete", source = TrapRedistributionArea) %>% 
+      hot_col(col = "TrapRedistributionMethod", type = "autocomplete", source = TrapRedistributionMethod) 
+      
+      
     
   })
   
