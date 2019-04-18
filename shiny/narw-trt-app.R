@@ -1,48 +1,8 @@
 library(shinydashboard)
+library(htmlwidgets)
 library(rhandsontable)
 
-# 
-# Action <- c("Closure",
-#             "Constraint_Fishery",
-#             "Constraint_Spatial",
-#             "EndlineModification",
-#             "MinTrawlLength",
-#             "TrapCap",
-#             "TrapReduction")
-# 
-# LMAs <- c("All",
-#           "A1",
-#           "A2",
-#           "A2_3overlap",
-#           "A3")
-# 
-# States <- c("All",
-#             "ME",
-#             "NH",
-#             "MA")
-# 
-# Fishery <- c("All",
-#              "NonExempt",
-#              "Exempt",
-#              "Midshelf_Lobster",
-#              "Midshelf_Crab",
-#              "Offshore_Lobster",
-#              "Offshore_Crab")
-# 
-# # select multiple
-# StatArea <- c(464, 465, 511,
-#               512, 513, 514,
-#               515, 521, 522,
-#               561, 562, 537,
-#               538, 539)
-# 
-# TrapRedistributionArea <- c("WithinStatArea",
-#                             "AdjacentStatAreas",
-#                             "AcrossLMA",
-#                             "None")
-# 
-# TrapRedistributionMethod <- c("Even",
-#                               "IDW")
+source("R/model-specs.R")
 
 
 ui <- dashboardPage(
@@ -61,8 +21,8 @@ ui <- dashboardPage(
               h4("Specify scenarios and scenario parameters"),
               fluidRow(
                 box(
-                  rHandsontableOutput("hot", width = 700),
-                  width = 10
+                  rHandsontableOutput("hot", width = "100%"),
+                  width = 12
                   )
                 )
               ),
@@ -78,7 +38,15 @@ ui <- dashboardPage(
 
 server <- function(input, output) {
   output$hot = renderRHandsontable({
-    rhandsontable(do.call(cbind, lapply(1:10, function(i) data.table(rnorm(15)))))
+    rhandsontable(DF, stretchH = "all") %>% 
+      hot_col(col = "Action", type = "dropdown", source = Action) %>% 
+      hot_col(col = "LMAs", type = "dropdown", source = LMAs) %>% 
+      hot_col(col = "States", type = "dropdown", source = States) %>% 
+      hot_col(col = "Fishery", type = "dropdown", source = Fishery) %>% 
+      hot_col(col = "StatArea", type = "dropdown", source = StatArea) %>% 
+      hot_col(col = "TrapRedistributionArea", type = "dropdown", source = TrapRedistributionArea) %>% 
+      hot_col(col = "TrapRedistributionMethod", type = "dropdown", source = TrapRedistributionMethod)
+
   })
 }
 
