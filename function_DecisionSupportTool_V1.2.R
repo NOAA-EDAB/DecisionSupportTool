@@ -114,7 +114,7 @@ DecisionTool=function(
     ###summary(MapRef)
     
     ## Trap Map ##################################################--
-    load(paste(HD, "/Inputs/TrapMap_V0.1.Rdata", sep="")); 
+    load(paste(HD, "/Inputs/TrapMapFactor_V0.1.Rdata", sep="")); 
     ### summary(TrapMap)
     ## head(TrapMap)
     

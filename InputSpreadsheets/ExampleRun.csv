@@ -1,0 +1,6 @@
+Action,LMA,State,StatArea,Fishery,Shapefile,Months,Percentage,TrapRedistributionArea,TrapRedistributionMethod
+Constraint_Spatial,A1,ME,"511, 512",,Example_511_512_Border,,,,
+Constraint_Spatial,A3,,,,,,,,
+Constraint_Fishery,,,,NonExempt,,,,,
+Closure,,,,,TinyWedge_LMA1,"5,6,7,8",,,
+TrapReduction,A3,,515,,,,0.6,,
