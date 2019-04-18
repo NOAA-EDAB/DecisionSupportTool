@@ -1,4 +1,5 @@
 library(shinydashboard)
+library(rhandsontable)
 
 # 
 # Action <- c("Closure",
@@ -48,30 +49,36 @@ ui <- dashboardPage(
   dashboardHeader(title = "NARW TRT Scenario Planning", titleWidth = 300),
   dashboardSidebar(    
     sidebarMenu(
-    menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
-    menuItem("Widgets", tabName = "widgets", icon = icon("th"))
+    menuItem("Specify Model", tabName = "specify_model", icon = icon("dashboard")),
+    menuItem("View Output", tabName = "view_output", icon = icon("th"))
     )
   ),
   dashboardBody(
-    # Boxes need to be put in a row (or column)
-    fluidRow(
-      box(plotOutput("plot1", height = 250)),
+    tabItems(
       
-      box(
-        title = "Controls",
-        sliderInput("slider", "Number of observations:", 1, 100, 50)
+      # First tab content
+      tabItem(tabName = "specify_model",
+              h4("Specify scenarios and scenario parameters"),
+              fluidRow(
+                box(
+                  rHandsontableOutput("hot", width = 700),
+                  width = 10
+                  )
+                )
+              ),
+      tabItem(tabName = "view_output",
+        fluidRow(
+            
+          )
+        )
       )
     )
   )
-)
+
 
 server <- function(input, output) {
-  set.seed(122)
-  histdata <- rnorm(500)
-  
-  output$plot1 <- renderPlot({
-    data <- histdata[seq_len(input$slider)]
-    hist(data)
+  output$hot = renderRHandsontable({
+    rhandsontable(do.call(cbind, lapply(1:10, function(i) data.table(rnorm(15)))))
   })
 }
 
