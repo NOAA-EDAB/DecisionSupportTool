@@ -10,8 +10,8 @@ DecisionTool=function(
 ) {
   
   # HomeDir="/net/work4/LobsterGroup/Management/RightWhales/DecisionSupportTool"
-  InputSpreadsheetName="CashesClosure.csv"
-  InputSpreadsheetName="ScenarioTemplate.csv"
+  # InputSpreadsheetName="CashesClosure.csv"
+  # InputSpreadsheetName="ScenarioTemplate.csv"
   
   ## V1.2 added option to run in high-resolution (1Nm) rather than low-resolution (10Nm)
   ## This is only useful if one wants to apply management decisions at finer scales
