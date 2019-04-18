@@ -8,7 +8,7 @@ DecisionTool=function(
   WriteOutputCsv=TRUE,
   WriteMapSources=FALSE
 ) {
-  
+  HD <- HomeDir
   defaultMapNames <- c("map1dTrapDensity","map1dTrapDensityLog","map3dTrawlLength","map4dLineDensity",
                        "map4dLineDensityLog","map6dLineDia","map8dMeanThreat", "map8dTotalThreat",
                        "map8dTotalThreatLog","map9WhaleHabitat", "map9WhaleHabitatLog",

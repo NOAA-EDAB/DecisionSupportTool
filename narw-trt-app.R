@@ -14,6 +14,8 @@ library(maptools)
 r.dir <- here::here("R")
 source(file.path(r.dir,"model-specs.R"))
 source(here::here("function_DecisionSupportTool_V1.2.R"))
+source(file.path(r.dir,"run_decisiontool.R"))
+
 
 ui <- dashboardPage(
   dashboardHeader(title = "ALW TRT Scenario Planning", titleWidth = 300),
