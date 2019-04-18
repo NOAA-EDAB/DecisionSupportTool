@@ -81,7 +81,7 @@ server <- function(input, output) {
       warning("Enter filename for scenario run.")
     } else {
       write.csv(param, 
-                file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), row.names = F)
+                file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), na="",row.names = F)
       print("Saved.")
       run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
     }
