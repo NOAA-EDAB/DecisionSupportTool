@@ -5,7 +5,7 @@ Action <- c("Closure",
             "MinTrawlLength",
             "TrapCap",
             "TrapReduction")
-LMAs <- c("All",
+LMA <- c("All",
           "A1",
           "A2",
           "A2_3overlap",
@@ -14,7 +14,6 @@ States <- c("All",
             "ME",
             "NH",
             "MA")
-
 Fishery <- c("All",
              "NonExempt",
              "Exempt",
@@ -34,12 +33,16 @@ TrapRedistributionArea <- c("WithinStatArea",
                             "None")
 TrapRedistributionMethod <- c("Even",
                               "IDW")
+Months <- 1:12
 
-
-DF <- data.frame(Action = rep(NA,10),
-                 LMAs = rep(NA, 10),
-                 States = rep(NA, 10),
-                 Fishery = rep(NA, 10),
-                 StatArea = rep(NA, 10),
-                 TrapRedistributionArea = rep(NA, 10),
-                 TrapRedistributionMethod = rep(NA, 10))
+#Data frame to hold 
+DF <- data.frame(Action = as.character(rep(NA,10)),
+                 LMAs = as.character(rep(NA, 10)),
+                 States = as.character(rep(NA, 10)),
+                 Fishery = as.character(rep(NA, 10)),
+                 StatArea = as.character(rep(NA, 10)),
+                 TrapRedistributionArea = as.character(rep(NA, 10)),
+                 TrapRedistributionMethod = as.character(rep(NA, 10)),
+                 Months = as.character(rep(NA, 10)),
+                 Percentage = as.character(rep(NA, 10)),
+                 Shapefile = as.character(rep(NA, 10)))
