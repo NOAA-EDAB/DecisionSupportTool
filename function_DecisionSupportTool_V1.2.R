@@ -100,7 +100,7 @@ DecisionTool=function(
     # coordinates(Grid)=c("Longitude", "Latitude"); proj4string(Grid)=proj4string(spLMAs)
     # plot(Grid)
     # GridPx=as(Grid, "SpatialPixelsDataFrame")
-    # Pts=unique(TrapMap_factor_factor[ ,c("IecIndex_1", "x", "y")]); ## get trap map coordinates to define domain
+    # Pts=unique(TrapMap_factor[ ,c("IecIndex_1", "x", "y")]); ## get trap map coordinates to define domain
     # coordinates(Pts)=c("x", "y"); proj4string(Pts)=CRS(spRef_DD)
     # Pts$GridID=over(Pts, GridPx)$GridID; summary(Pts)
     # StandardPx=GridPx[GridPx$GridID %in% Pts$GridID, c("GridID")]
@@ -231,8 +231,8 @@ DecisionTool=function(
   if(Fold) {
     if(nrow(Constraints_Fishery)>0) {
       Constraints_Fishery
-      TrapMap_factor_factor=TrapMap_factor_factor[TrapMap_factor_factor$Fishery %in% Constraints_Fishery$Fishery, ]; dim(TrapMap_factor_factor) ## drop all data outside constraints
-      WhalesAt1Nm=WhalesAt1Nm[WhalesAt1Nm$IecIndex_1 %in% TrapMap_factor_factor$IecIndex_1, ] ## filter whale data
+      TrapMap_factor=TrapMap_factor[TrapMap_factor$Fishery %in% Constraints_Fishery$Fishery, ]; dim(TrapMap_factor) ## drop all data outside constraints
+      WhalesAt1Nm=WhalesAt1Nm[WhalesAt1Nm$IecIndex_1 %in% TrapMap_factor$IecIndex_1, ] ## filter whale data
     }
   } ## Fishery constraints
   
@@ -395,7 +395,7 @@ DecisionTool=function(
           Stage2s$TrapsFished[Stage2s$IecIndex_1 %in% MapRef_I$IecIndex_1 &
                                 Stage2s$Month %in% Months] * (1-(TrapReductions$Percentage[i])) ## apply reduction
       }
-      aggregate(TrapsFished~StatArea, TrapMap_factor_factor, sum)
+      aggregate(TrapsFished~StatArea, TrapMap_factor, sum)
       
     } ## perform trap reductions
 
