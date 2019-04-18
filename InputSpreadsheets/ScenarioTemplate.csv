@@ -1,0 +1,16 @@
+﻿Action,LMA,State,StatArea,Fishery,Shapefile,Months,Percentage,TrapRedistributionArea,TrapRedistributionMethod
+Closure,A1,ME,"511, 512",Midshelf_Lobster,Example_511_512_Border,"5,6,7,8",0.6,WithinStatArea,Even
+Constraint_Spatial,A3,,,,,,,,
+Closure,,,,NonExempt,,,,,
+Closure,,,,,TinyWedge_LMA1,"5,6,7,8",,,
+TrapReduction,A3,,515,,,,0.6,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
