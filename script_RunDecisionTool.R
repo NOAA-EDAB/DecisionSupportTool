@@ -2,6 +2,11 @@ library(rgdal)
 library(sp)
 library(maps)
 library(maptools)
+library(grid)
+library(gtable)
+library(gridExtra)
+library(maptools)
+library(rgdal)
 
 ## set working directory
 HD=here::here()
