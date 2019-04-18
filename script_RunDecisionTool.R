@@ -1,5 +1,10 @@
+library(rgdal)
+library(sp)
+library(maps)
+library(maptools)
+
 ## set working directory
-HD="/net/work4/LobsterGroup/Management/RightWhales/DecisionSupportTool"
+HD=here::here()
 # HD="C:/Lobsters/RightWhales/DecisionSupportTool"
 
 ## source decision support function

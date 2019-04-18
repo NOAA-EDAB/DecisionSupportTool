@@ -10,8 +10,8 @@ DecisionTool=function(
 ) {
   
   # HomeDir="/net/work4/LobsterGroup/Management/RightWhales/DecisionSupportTool"
-  # InputSpreadsheetName="CashesClosure.csv"
-  # InputSpreadsheetName="ScenarioTemplate.csv"
+  InputSpreadsheetName="CashesClosure.csv"
+  InputSpreadsheetName="ScenarioTemplate.csv"
   
   ## V1.2 added option to run in high-resolution (1Nm) rather than low-resolution (10Nm)
   ## This is only useful if one wants to apply management decisions at finer scales
@@ -20,7 +20,7 @@ DecisionTool=function(
 
   
   # HD=("/net/work4/LobsterGroup/Management/RightWhales/DecisionSupportTool");
-  HD=here::here("")
+  # HD=here::here("")
   
   spRef_UTM_19="+proj=utm +zone=19 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
   spRef_DD="+proj=longlat +ellps=GRS80 +datum=NAD83 +no_defs"
@@ -100,7 +100,7 @@ DecisionTool=function(
     # coordinates(Grid)=c("Longitude", "Latitude"); proj4string(Grid)=proj4string(spLMAs)
     # plot(Grid)
     # GridPx=as(Grid, "SpatialPixelsDataFrame")
-    # Pts=unique(TrapMap[ ,c("IecIndex_1", "x", "y")]); ## get trap map coordinates to define domain
+    # Pts=unique(TrapMap_factor_factor[ ,c("IecIndex_1", "x", "y")]); ## get trap map coordinates to define domain
     # coordinates(Pts)=c("x", "y"); proj4string(Pts)=CRS(spRef_DD)
     # Pts$GridID=over(Pts, GridPx)$GridID; summary(Pts)
     # StandardPx=GridPx[GridPx$GridID %in% Pts$GridID, c("GridID")]
@@ -115,8 +115,8 @@ DecisionTool=function(
     
     ## Trap Map ##################################################--
     load(paste(HD, "/Inputs/TrapMapFactor_V0.1.Rdata", sep="")); 
-    ### summary(TrapMap)
-    ## head(TrapMap)
+    ### summary(TrapMap_factor)
+    ## head(TrapMap_factor)
     
     ## TrawlLengthModel #########################################--
     load(paste(HD, "/Inputs/TrawlLengthModel.Rdata", sep="")); 
@@ -221,18 +221,18 @@ DecisionTool=function(
         } else {     MapRef_Cr=MapRef_CrI }
       }
       # plot(MapRef_Cr)
-      TrapMap=TrapMap[TrapMap$IecIndex_1 %in% unique(MapRef_Cr$IecIndex_1), ]
+      TrapMap_factor=TrapMap_factor[TrapMap_factor$IecIndex_1 %in% unique(MapRef_Cr$IecIndex_1), ]
       WhalesAt1Nm=WhalesAt1Nm[WhalesAt1Nm$IecIndex_1 %in% unique(MapRef_Cr$IecIndex_1), ]
       # summary(WhalesAt1Nm)
-      if(nrow(TrapMap)==0){ print("Error: Spatial Constraints removed all data"); break()}
+      if(nrow(TrapMap_factor)==0){ print("Error: Spatial Constraints removed all data"); break()}
     } ##
   } ## Spatial Constraints
   
   if(Fold) {
     if(nrow(Constraints_Fishery)>0) {
       Constraints_Fishery
-      TrapMap=TrapMap[TrapMap$Fishery %in% Constraints_Fishery$Fishery, ]; dim(TrapMap) ## drop all data outside constraints
-      WhalesAt1Nm=WhalesAt1Nm[WhalesAt1Nm$IecIndex_1 %in% TrapMap$IecIndex_1, ] ## filter whale data
+      TrapMap_factor_factor=TrapMap_factor_factor[TrapMap_factor_factor$Fishery %in% Constraints_Fishery$Fishery, ]; dim(TrapMap_factor_factor) ## drop all data outside constraints
+      WhalesAt1Nm=WhalesAt1Nm[WhalesAt1Nm$IecIndex_1 %in% TrapMap_factor_factor$IecIndex_1, ] ## filter whale data
     }
   } ## Fishery constraints
   
@@ -244,8 +244,8 @@ DecisionTool=function(
     ## (management option #1 above). 
     ## We would need to consider a rough approach to how to model redistributing traps. 
     ## We can start with a basic set of rules for now.
-    Stage1d=TrapMap
-    Stage1s=TrapMap
+    Stage1d=TrapMap_factor
+    Stage1s=TrapMap_factor
     
     if(nrow(Closures)>0){
       for(i in 1:nrow(Closures)){
@@ -395,7 +395,7 @@ DecisionTool=function(
           Stage2s$TrapsFished[Stage2s$IecIndex_1 %in% MapRef_I$IecIndex_1 &
                                 Stage2s$Month %in% Months] * (1-(TrapReductions$Percentage[i])) ## apply reduction
       }
-      aggregate(TrapsFished~StatArea, TrapMap, sum)
+      aggregate(TrapsFished~StatArea, TrapMap_factor_factor, sum)
       
     } ## perform trap reductions
 
