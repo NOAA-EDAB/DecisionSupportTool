@@ -34,10 +34,11 @@ TrapRedistributionArea <- c("WithinStatArea",
 TrapRedistributionMethod <- c("Even",
                               "IDW")
 Months <- 1:12
-
+Percentage <- ""
+Shapefile <- ""
 #Data frame to hold 
 DF <- data.frame(Action = as.character(rep(NA,10)),
-                 LMAs = as.character(rep(NA, 10)),
+                 LMA = as.character(rep(NA, 10)),
                  States = as.character(rep(NA, 10)),
                  Fishery = as.character(rep(NA, 10)),
                  StatArea = as.character(rep(NA, 10)),

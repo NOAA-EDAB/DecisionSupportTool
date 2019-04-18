@@ -2,7 +2,8 @@ library(shinydashboard)
 library(htmlwidgets)
 library(rhandsontable)
 
-source("R/model-specs.R")
+r.dir <- here::here("R")
+source(file.path(r.dir,"model-specs.R"))
 
 
 ui <- dashboardPage(
@@ -21,10 +22,14 @@ ui <- dashboardPage(
               h4("Specify scenarios and scenario parameters"),
               fluidRow(
                 box(
+                  textInput("filename", label = "Enter scenario name", value = NULL)
+                ),
+                box(
+                  
                   rHandsontableOutput("hot", width = "100%"),
                   actionButton(inputId="run",label="Run model"),
                   helpText('Parameterize actions by entering information into the spreadsheet above.
-                           Right click and select "Add Row" to incorporate multiple actions into the
+                           Right click and select "Insert Row Above" to incorporate multiple actions into the
                            scenario.'),
                   width = 12
                   )
@@ -44,7 +49,7 @@ server <- function(input, output) {
   output$hot = renderRHandsontable({
     rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
       hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
-      hot_col(col = "LMAs", type = "autocomplete", source = LMAs) %>% 
+      hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
       hot_col(col = "States", type = "autocomplete", source = States) %>% 
       hot_col(col = "Fishery", type = "autocomplete", source = Fishery) %>% 
       hot_col(col = "StatArea", type = "autocomplete", source = StatArea) %>% 
@@ -53,16 +58,25 @@ server <- function(input, output) {
       hot_col(col = "Months", type = "autocomplete", source = Months) %>% 
       hot_col(col = "Percentage", type = "numeric", strict = F) %>% 
       hot_col(col = "Shapefile", strict = F, type = "autocomplete")
-
+    
   })
   
   observeEvent(input$run, {
     
     param <- hot_to_r(input$hot)
     param[is.na(param)] <- ""
-    print(param)
+    
+    if (is.null(input$filename)){
+      warning("Enter filename for scenario run.")
+    } else {
+      write.csv(param, 
+                file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), row.names = F)
+      print("Saved.")
+    }
+    
     
   })
+  
 }
 
 shinyApp(ui, server)
