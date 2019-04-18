@@ -17,7 +17,7 @@ source(paste(HD, "function_DecisionSupportTool_V1.2.R", sep="/"))
 ## call function
 DecisionTool(
   HomeDir=HD, ## home directory for subdirectories
-  InputSpreadsheetName="ExampleRun.csv", ## csv input file with specified criteria
+  InputSpreadsheetName="ExampleRun3.csv", ## csv input file with specified criteria
   HighResolution=FALSE, ## Option to run in HighResolution mode. Slows model drammatically, not fully tested
   PrintTables=TRUE, ## print pdf tables of results
   PrintDefaultMaps=TRUE, ## print maps of default states; turned off to speed model run
