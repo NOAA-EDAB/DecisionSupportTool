@@ -119,10 +119,10 @@ print(input$shapefiles)
 
   #Specifies table layout for custom input parameters
   output$hot = renderRHandsontable({
-    
+    print(input$existing_scenarios)
     #Show blank template if no input file is chosen
     if (input$existing_scenarios == ""){
-      
+
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
         hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
         hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
@@ -137,7 +137,7 @@ print(input$shapefiles)
     
     #Show filled template if input file is chosen
     } else {
-      
+   print("file")
       DF <- read.csv(paste0(file.path("InputSpreadsheets",input$existing_scenarios),".csv"))
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
         hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
@@ -198,9 +198,9 @@ print(input$shapefiles)
   })
   
   #Observes the "Choose existing scenario button"
-  observeEvent(input$existing_scenarios, {
-    selected_scenario <- read.csv(paste0(file.path("InputSpreadsheets", input$existing_scenarios),".csv"))
-  })
+ # observeEvent(input$existing_scenarios, {
+#    selected_scenario <- read.csv(paste0(file.path("InputSpreadsheets", input$existing_scenarios),".csv"))
+#  })
   
   
 }
