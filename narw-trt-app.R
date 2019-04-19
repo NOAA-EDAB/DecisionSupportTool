@@ -135,7 +135,7 @@ print(input$shapefiles)
     
     #Show filled template if input file is chosen
     } else {
-      print(input$existing_scenarios)
+      
       DF <- read.csv(paste0(file.path("InputSpreadsheets",input$existing_scenarios),".csv"))
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
         hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
@@ -152,20 +152,25 @@ print(input$shapefiles)
     }
   })
   
-  #Observes the "Run Model" button   
-  observeEvent(input$run, {
+  observeEvent(input$filename, {
     
     #Prevent model run if no file is chosen and no custom input
-    if (all(is.na(hot_to_r(input$hot)))){
+    if (is.null(input$hot)){
       shinyjs::disable("run")
       
-    #Prevent model run if custom parameters exist without a scenario name
+      #Prevent model run if custom parameters exist without a scenario name
     } else if (input$filename == ""){
       shinyjs::disable("run")
       
-    #Otherwise run the model and save the ouput to csv
+      #Otherwise run the model and save the ouput to csv
     } else {
       shinyjs::enable("run")
+    }
+    
+  })
+  
+  #Observes the "Run Model" button   
+  observeEvent(input$run, {
     
         #Converts table input into something shiny can use ----------------------------
         param <- hot_to_r(input$hot) 
@@ -192,8 +197,7 @@ print(input$shapefiles)
           message = function(m) {
             shinyjs::html(id = "run-text", html = paste0(m$message,"<br>"), add = TRUE)
           })
-      }
-  })
+      })
   
   # #Observes the "Choose existing scenario button"
   # observeEvent(input$existing_scenarios, {
