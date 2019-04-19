@@ -79,8 +79,8 @@ server <- function(input, output) {
     
     param <- hot_to_r(input$hot) 
     param[is.na(param)] <- ""
-    param <- param %>% filter(Action != "")
-    
+    param <- param %>% dplyr::filter(Action != "")
+    print(param)
     if (is.null(input$filename)){
       warning("Enter filename for scenario run.")
     } else {
