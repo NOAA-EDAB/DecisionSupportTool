@@ -106,21 +106,20 @@ server <- function(input, output) {
   ########### 100 fit isobar check box ##############
   observeEvent(input$shapefiles, {
 print(input$shapefiles)
-    # if (input$iso_100 == T) {
-    #   leafletProxy("help_map") %>% clearGroup(group = 'iso_100') %>%
-    #     addPolygons(group = 'iso_100',data = iso100ft,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    # } else {
-    #   leafletProxy("help_map") %>% clearGroup(group = 'iso_100')
-    # }
     
+    for (ichoice in 1:length(input$shapefiles)) {
+        leafletProxy("help_map") %>% clearGroup(group = input$shapefile[ichoice]) %>%
+        addPolygons(group = input$shapefile[ichoice] ,data = eval(parse(text=input$shapefile[ichoice])),stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    }
+
   })
 
   #Specifies table layout for custom input parameters
   output$hot = renderRHandsontable({
-    
+    print(input$existing_scenarios)
     #Show blank template if no input file is chosen
     if (input$existing_scenarios == ""){
-      
+
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
         hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
         hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
@@ -199,11 +198,12 @@ print(input$shapefiles)
           })
       })
   
+
   # #Observes the "Choose existing scenario button"
   # observeEvent(input$existing_scenarios, {
   #   selected_scenario <- read.csv(paste0(file.path("InputSpreadsheets", input$existing_scenarios),".csv"))
   # })
-  
+
   
 }
 
