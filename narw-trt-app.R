@@ -79,13 +79,22 @@ server <- function(input, output) {
     
     param <- hot_to_r(input$hot) 
     param[is.na(param)] <- ""
+    # dumb workaround. we should be able to declare data types of each column in ui. 
+    param$Action <- as.character(param$Action)
+    param$LMA <- as.character(param$LMA)
+    param$State <- as.character(param$State)
+    param$StatArea <- as.character(param$StatArea)
+    param$Fishery <- as.character(param$Fishery)
+    param$Shapefile <- as.character(param$Shapefile)
+    param$Months <- as.character(param$Months)
+    #####################################
     param <- param %>% dplyr::filter(Action != "")
-    print(param)
+
     if (is.null(input$filename)){
       warning("Enter filename for scenario run.")
     } else {
       write.csv(param, 
-                file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), row.names = F)
+                file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), na="",row.names = F)
       print("Saved.")
       run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
     }

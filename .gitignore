@@ -36,5 +36,6 @@ vignettes/*.pdf
 rsconnect/
 .Rproj.user
 
-#files
+#files & folders
+Scenarios
 *.pdf
