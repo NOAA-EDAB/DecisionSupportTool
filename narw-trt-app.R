@@ -59,6 +59,10 @@ ui <- dashboardPage(
                            scenario.'),
                   width = 12
                   )
+                ),
+              fluidRow(
+                shinyjs::useShinyjs(),
+                  textOutput("run-text")
                 )
               ),
       tabItem(tabName = "view_output",
@@ -73,12 +77,11 @@ ui <- dashboardPage(
                             sliderInput("range", "Magnitudes", 1,10,
                                         value = range(1:10), step = 0.1),
                             checkboxInput(inputId='iso_100',label="100 ft contour",value=F)
-                            
-              )
-                
-      ) #,
+                           
+          )
+        ) 
+      )
     )
-  )
   )
 )
 
@@ -108,11 +111,8 @@ server <- function(input, output) {
     }
     
   })
-  
-  
 
   #Specifies table layout for custom input parameters
-
   output$hot = renderRHandsontable({
     
     #Show blank template if no input file is chosen
@@ -147,17 +147,20 @@ server <- function(input, output) {
         hot_col(col = "TrapRedistributionMethod", type = "autocomplete", source = TrapRedistributionMethod)
       
     }
-     
-      
-      
-    
   })
   
   #Observes the "Run Model" button   
   observeEvent(input$run, {
     
-    if (input$existing_scenarios == "" & all(is.na(hot_to_r(input$hot)))) {
+    #Prevent model run if no file is chosen and no custom input
+    if (input$existing_scenarios == "" & all(is.na(hot_to_r(input$hot)))){
       shinyjs::disable("run")
+      
+    #Prevent model run if custom parameters exist without a scenario name
+    } else if (input$filename == "" & input$existing_scenarios == ""){
+      shinyjs::disable("run")
+    
+    #Otherwise run the model and save the ouput to csv
     } else {
       shinyjs::enable("run")
     
@@ -176,13 +179,17 @@ server <- function(input, output) {
         param <- param %>% dplyr::filter(Action != "")
     
         #Saves output and runs model---------------------------------------------------
-        
           write.csv(param, 
                     file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), na="",row.names = F)
-          print("Saved.")
-          run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
-    }
-      
+          
+          withCallingHandlers({
+            shinyjs::html("run-text", "")
+            run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
+          },
+          message = function(m) {
+            shinyjs::html(id = "run-text", html = paste0(m$message,"<br>"), add = TRUE)
+          })
+      }
   })
   
   #Observes the "Choose existing scenario button"
