@@ -109,13 +109,12 @@ server <- function(input, output) {
   ########### 100 fit isobar check box ##############
   observeEvent(input$shapefiles, {
 print(input$shapefiles)
-    # if (input$iso_100 == T) {
-    #   leafletProxy("help_map") %>% clearGroup(group = 'iso_100') %>%
-    #     addPolygons(group = 'iso_100',data = iso100ft,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    # } else {
-    #   leafletProxy("help_map") %>% clearGroup(group = 'iso_100')
-    # }
     
+    for (ichoice in 1:length(input$shapefiles)) {
+        leafletProxy("help_map") %>% clearGroup(group = input$shapefile[ichoice]) %>%
+        addPolygons(group = input$shapefile[ichoice] ,data = eval(parse(text=input$shapefile[ichoice])),stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    }
+
   })
 
   #Specifies table layout for custom input parameters
