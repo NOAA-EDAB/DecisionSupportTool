@@ -17,6 +17,8 @@ source(here::here("function_DecisionSupportTool_V1.2.R"))
 source(file.path(r.dir,"run_decisiontool.R"))
 
 
+#User interface
+
 ui <- dashboardPage(
   dashboardHeader(title = "ALW TRT Scenario Planning", titleWidth = 300),
   dashboardSidebar(    
@@ -33,8 +35,17 @@ ui <- dashboardPage(
               h4("Specify scenarios and scenario parameters"),
               fluidRow(
                 box(
-                  textInput("filename", label = "Enter scenario name", value = NULL)
+                  textInput("filename", label = "Enter new scenario name:", value = NULL)
+                  ),
+                box(
+                  selectInput("existing_scenarios",
+                              "Choose existing scenario:",
+                              selected = "",
+                              c("",existing_input_scenarios),
+                              multiple = F)
+                  )
                 ),
+              fluidRow(
                 box(
                   
                   rHandsontableOutput("hot", width = "100%"),
@@ -56,27 +67,54 @@ ui <- dashboardPage(
   )
 
 
+#Server code
 server <- function(input, output) {
+  
+  #Specifies table layout for custom input parameters
   output$hot = renderRHandsontable({
     
-    rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
-      hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
-      hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
-      hot_col(col = "State", type = "autocomplete", source = State) %>% 
-      hot_col(col = "StatArea", type = "autocomplete", source = StatArea) %>% 
-      hot_col(col = "Fishery", type = "autocomplete", source = Fishery) %>% 
-      hot_col(col = "Shapefile", strict = F, type = "autocomplete") %>% 
-      hot_col(col = "Months", type = "autocomplete", source = Months) %>%
-      hot_col(col = "Percentage", type = "numeric", strict = F) %>% 
-      hot_col(col = "TrapRedistributionArea", type = "autocomplete", source = TrapRedistributionArea) %>% 
-      hot_col(col = "TrapRedistributionMethod", type = "autocomplete", source = TrapRedistributionMethod) 
+    #Show blank template if no input file is chosen
+    if (input$existing_scenarios == ""){
+      
+      rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
+        hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
+        hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
+        hot_col(col = "State", type = "autocomplete", source = State) %>% 
+        hot_col(col = "StatArea", type = "autocomplete", source = StatArea) %>% 
+        hot_col(col = "Fishery", type = "autocomplete", source = Fishery) %>% 
+        hot_col(col = "Shapefile", strict = F, type = "autocomplete") %>% 
+        hot_col(col = "Months", type = "autocomplete", source = Months) %>%
+        hot_col(col = "Percentage", type = "numeric", strict = F) %>% 
+        hot_col(col = "TrapRedistributionArea", type = "autocomplete", source = TrapRedistributionArea) %>% 
+        hot_col(col = "TrapRedistributionMethod", type = "autocomplete", source = TrapRedistributionMethod)
+    
+    #Show filled template if input file is chosen
+    } else {
+      
+      DF <- read.csv(paste0(file.path("InputSpreadsheets",input$existing_scenarios),".csv"))
+      rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
+        hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
+        hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
+        hot_col(col = "State", type = "autocomplete", source = State) %>% 
+        hot_col(col = "StatArea", type = "autocomplete", source = StatArea) %>% 
+        hot_col(col = "Fishery", type = "autocomplete", source = Fishery) %>% 
+        hot_col(col = "Shapefile", strict = F, type = "autocomplete") %>% 
+        hot_col(col = "Months", type = "autocomplete", source = Months) %>%
+        hot_col(col = "Percentage", type = "numeric", strict = F) %>% 
+        hot_col(col = "TrapRedistributionArea", type = "autocomplete", source = TrapRedistributionArea) %>% 
+        hot_col(col = "TrapRedistributionMethod", type = "autocomplete", source = TrapRedistributionMethod)
+      
+    }
+     
       
       
     
   })
   
+  #Observes the "Run Model" button   
   observeEvent(input$run, {
     
+    #Converts table input into something shiny can use
     param <- hot_to_r(input$hot) 
     param[is.na(param)] <- ""
     # dumb workaround. we should be able to declare data types of each column in ui. 
@@ -101,6 +139,15 @@ server <- function(input, output) {
     
     
   })
+  
+  #Observes the "Choose existing scenario button"
+  observeEvent(input$existing_scenarios, {
+    
+    selected_scenario <- read.csv(paste0(file.path("InputSpreadsheets", input$existing_scenarios),".csv"))
+    
+    
+  })
+  
   
 }
 
