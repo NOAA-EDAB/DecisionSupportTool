@@ -10,11 +10,13 @@ library(gtable)
 library(gridExtra)
 library(maptools)
 library(shinyjs)
+library(leaflet)
 
 #Source helper functions
 r.dir <- here::here("R")
+source(file.path(r.dir,"read_shapefiles.R"))
 source(file.path(r.dir,"model-specs.R"))
-source(here::here("function_DecisionSupportTool_V1.2.R"))
+source("function_DecisionSupportTool_V1.2.R")
 source(file.path(r.dir,"run_decisiontool.R"))
 
 
@@ -25,7 +27,8 @@ ui <- dashboardPage(
   dashboardSidebar(    
     sidebarMenu(
     menuItem("Specify Model", tabName = "specify_model", icon = icon("dashboard")),
-    menuItem("View Output", tabName = "view_output", icon = icon("th"))
+    menuItem("View Output", tabName = "view_output", icon = icon("th")),
+    menuItem("Help", tabName = "help", icon = icon("question"))
     )
   ),
   dashboardBody(
@@ -62,16 +65,54 @@ ui <- dashboardPage(
         fluidRow(
             
           )
-        )
-      )
+        ),
+      tabItem(tabName = "help",
+              fluidPage(
+              shinydashboard::box(width = NULL, solidHeader = TRUE, status = 'primary', leafletOutput('help_map',width="100%",height="80vh")),
+              absolutePanel(top = 100, left = 280,
+                            sliderInput("range", "Magnitudes", 1,10,
+                                        value = range(1:10), step = 0.1),
+                            checkboxInput(inputId='iso_100',label="100 ft contour",value=F)
+                            
+              )
+                
+      ) #,
     )
   )
+  )
+)
 
 
 #Server code
 server <- function(input, output) {
   
+
+  output$help_map = renderLeaflet({
+    # initiates rendering. This all remains same for whole instance of app
+    leaflet() %>%
+      setView(lng = -68.73742, lat = 42.31386, zoom = 6) %>%
+      addProviderTiles(providers$Esri.OceanBasemap) %>%
+      addScaleBar(position = 'bottomright', options = scaleBarOptions(maxWidth = 250))
+
+
+  })
+  
+  ########### 100 fit isobar check box
+  observeEvent(input$iso_100, {
+
+    if (input$iso_100 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = 'iso_100') %>%
+        addPolygons(group = 'iso_100',data = iso100ft,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = 'iso_100')
+    }
+    
+  })
+  
+  
+
   #Specifies table layout for custom input parameters
+
   output$hot = renderRHandsontable({
     
     #Show blank template if no input file is chosen
