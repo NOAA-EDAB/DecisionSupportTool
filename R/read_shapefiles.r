@@ -1,4 +1,6 @@
-## Stat Areas
+# reads in a bunch of shape files
+
+
 shapefilePath <- here::here("InputShapefiles")
 #shapeFiles <- list.files(here::here("InputShapefiles"),pattern="\\.shp$")
 

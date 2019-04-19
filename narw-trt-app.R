@@ -18,6 +18,7 @@ source(file.path(r.dir,"read_shapefiles.R"))
 source(file.path(r.dir,"model-specs.R"))
 source("function_DecisionSupportTool_V1.2.R")
 source(file.path(r.dir,"run_decisiontool.R"))
+previousShapefiles <- NULL
 
 
 #User interface
@@ -73,12 +74,28 @@ ui <- dashboardPage(
       tabItem(tabName = "help",
               fluidPage(
               shinydashboard::box(width = NULL, solidHeader = TRUE, status = 'primary', leafletOutput('help_map',width="100%",height="80vh")),
-              absolutePanel(top = 100, left = 280,
-                            sliderInput("range", "Magnitudes", 1,10,
-                                        value = range(1:10), step = 0.1),
-                            checkboxGroupInput(inputId='shapefiles',label="Display Options",c("100f"="iso100ft","EastCoast"="EastCoastLines","GB"="GB","GOM"="GOM"),
-                                               selected = c("iso100f","EastCoast"),inline = T)
-                            
+              
+              absolutePanel(top = 100, left = 320,
+                    # sliderInput("range", "Magnitudes", 1,10,
+                    #                     value = range(1:10), step = 0.1),
+                    # # checkboxGroupInput(inputId='shapefiles',label="Display Options",c("100ft"="iso100ft","EastCoast"="EastCoastLines","GB"="GB","GOM"="GOM"),
+                    #                            inline = T)
+                    h3("Display options"),
+                    checkboxInput(inputId='shapefile1',label="100ft",value = F),
+                    checkboxInput(inputId='shapefile2',label="EastCoast",value = F),
+                    checkboxInput(inputId='shapefile3',label="GB",value = F),
+                    checkboxInput(inputId='shapefile4',label="GOM",value = F),
+                    checkboxInput(inputId='shapefile5',label="GSC_Gillnet",value = F),
+                    checkboxInput(inputId='shapefile6',label="GSC_Trap",value = F),
+                    checkboxInput(inputId='shapefile7',label="GSC_Sliver",value = F),
+                    checkboxInput(inputId='shapefile8',label="LCMAs",value = F),
+                    checkboxInput(inputId='shapefile9',label="MASS_RA",value = F),
+                    checkboxInput(inputId='shapefile10',label="MASS_RANE",value = F),
+                    checkboxInput(inputId='shapefile11',label="NEA_NR",value = F),
+                    checkboxInput(inputId='shapefile12',label="NEA_WGOM",value = F),
+                    checkboxInput(inputId='shapefile13',label="SA_DT",value = F),
+                    checkboxInput(inputId='shapefile14',label="SA_537",value = F)
+                    
               )
                 
       ) #,
@@ -104,19 +121,132 @@ server <- function(input, output) {
   })
   
   ########### 100 fit isobar check box ##############
-  observeEvent(input$shapefiles, {
-print(input$shapefiles)
-    
-    for (ichoice in 1:length(input$shapefiles)) {
-        leafletProxy("help_map") %>% clearGroup(group = input$shapefile[ichoice]) %>%
-        addPolygons(group = input$shapefile[ichoice] ,data = eval(parse(text=input$shapefile[ichoice])),stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+  # observeEvent(input$shapefiles, {
+  #     for (ichoice in 1:length(input$shapefiles)) {
+  #       group <- input$shapefiles[ichoice]
+  #       data  <-  eval(parse(text=group))
+  #       leafletProxy("help_map") %>% clearGroup(group = group)  %>%
+  #          addPolygons(group = group ,data = data ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+  #     }
+  # })
+  ###############################################################################################
+  ################### HORRIBLE CODE . NEED TO FIND A BETTER WAY #################################
+  ###############################################################################################
+  observeEvent(input$shapefile1, {
+    if(input$shapefile1 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile1")  %>%
+        addPolygons(group = "shapefile1" ,data = iso100ft ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile1")
     }
-
+  })
+  observeEvent(input$shapefile2, {
+    if(input$shapefile2 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile2")  %>%
+        addPolygons(group = "shapefile2" ,data = EastCoastLines ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile2")
+    }
+  })
+  observeEvent(input$shapefile3, {
+    if(input$shapefile3 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile3")  %>%
+        addPolygons(group = "shapefile3" ,data = GB,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile3")
+    }
+  })
+  observeEvent(input$shapefile4, {
+    if(input$shapefile4 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile4")  %>%
+        addPolygons(group = "shapefile4" ,data = GOM ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile4")
+    }
+  })
+  observeEvent(input$shapefile5, {
+    if(input$shapefile5 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile5")  %>%
+        addPolygons(group = "shapefile5" ,data = GSC_Gillnet ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile5")
+    }
+  })
+  observeEvent(input$shapefile6, {
+    if(input$shapefile6 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile6")  %>%
+        addPolygons(group = "shapefile6" ,data = GSC_Trap ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile6")
+    }
+  })
+  observeEvent(input$shapefile7, {
+    if(input$shapefile7 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile7")  %>%
+        addPolygons(group = "shapefile7" ,data = GSC_Sliver ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile7")
+    }
+  })
+  observeEvent(input$shapefile8, {
+    if(input$shapefile8 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile8")  %>%
+        addPolygons(group = "shapefile8" ,data = LCMAs ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+      } else {
+        leafletProxy("help_map") %>% clearGroup(group = "shapefile8")
+        }
+  })  
+  observeEvent(input$shapefile9, {
+    if(input$shapefile9 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile9")  %>%
+        addPolygons(group = "shapefile9" ,data = MASS_RA ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile9")
+    }
+  })
+  observeEvent(input$shapefile10, {
+    if(input$shapefile10 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile10")  %>%
+        addPolygons(group = "shapefile10" ,data = MASS_RANE ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile10")
+    }
+  }) 
+  observeEvent(input$shapefile11, {
+    if(input$shapefile11 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile11")  %>%
+        addPolygons(group = "shapefile11" ,data = NEA_NR ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile11")
+    }
+  })
+  observeEvent(input$shapefile12, {
+    if(input$shapefile12 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile12")  %>%
+        addPolygons(group = "shapefile12" ,data = NEA_WGOM ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile12")
+    }
+  })
+  observeEvent(input$shapefile13, {
+    if(input$shapefile13 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile13")  %>%
+        addPolygons(group = "shapefile13" ,data = SA_DT ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile13")
+    }
+  })
+  observeEvent(input$shapefile14, {
+    if(input$shapefile14 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile14")  %>%
+        addPolygons(group = "shapefile14" ,data = SA_537 ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile14")
+    }
   })
 
   #Specifies table layout for custom input parameters
   output$hot = renderRHandsontable({
-    print(input$existing_scenarios)
     #Show blank template if no input file is chosen
     if (input$existing_scenarios == ""){
 
