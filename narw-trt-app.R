@@ -11,14 +11,19 @@ library(gridExtra)
 library(maptools)
 library(shinyjs)
 library(leaflet)
+library(imager)
+library(shinyEffects)
 
 #Source helper functions
 r.dir <- here::here("R")
-source(file.path(r.dir,"read_shapefiles.R"))
+
+# source(file.path(r.dir,"read_shapefiles.R"))
 source(file.path(r.dir,"model-specs.R"))
 source("function_DecisionSupportTool_V1.2.R")
 source(file.path(r.dir,"run_decisiontool.R"))
 
+#A zoom effect for boxes
+setZoom <- shinyEffects::setZoom
 
 #User interface
 
@@ -31,7 +36,8 @@ ui <- dashboardPage(
     menuItem("Help", tabName = "help", icon = icon("question"))
     )
   ),
-  dashboardBody(
+  dashboardBody(    
+    
     tabItems(
       
       # First tab content
@@ -67,7 +73,47 @@ ui <- dashboardPage(
               ),
       tabItem(tabName = "view_output",
         fluidRow(
-            
+          box(
+            selectInput("select_plots", label = "Select plots to view:", selected = "Total Threat",
+                        choices = list(
+                          "Trap Density",
+                          "Trawl Length",
+                          "Line Density",
+                          "Line Diameter",
+                          "Mean Threat",
+                          "Total Threat",
+                          "Risk Score",
+                          "Whale Habitat"
+                          )
+                        ),
+            checkboxInput("log_plots", label = "Log transform?", FALSE)
+          )
+        ),
+        fluidRow(
+            box(
+              h4("Default model output:"),
+              plotOutput("plot1",click="plot1_click",
+                         dblclick = "plot1_dblclick",
+                         width = "650px",
+                         height = "750px",
+                         brush = brushOpts(
+                           id = "plot1_brush",
+                           resetOnNew = TRUE
+                )
+              )
+            ),
+            box(
+              h4("Scenario model output:"),
+              plotOutput("plot2", click="plot2_click",
+                         dblclick = "plot2_dblclick",
+                         width = "650px",
+                         height = "750px",
+                         brush = brushOpts(
+                           id = "plot2_brush",
+                           resetOnNew = TRUE
+                )
+              )
+            )
           )
         ),
       tabItem(tabName = "help",
@@ -77,12 +123,9 @@ ui <- dashboardPage(
                             sliderInput("range", "Magnitudes", 1,10,
                                         value = range(1:10), step = 0.1),
                             checkboxGroupInput(inputId='shapefiles',label="Display Options",c("100f"="iso100ft","EastCoast"="EastCoastLines","GB"="GB","GOM"="GOM"),
-                                               selected = c("iso100f","EastCoast"),inline = T)
-                            
-              )
-                
-      ) #,
-      
+                                               selected = c("iso100f","EastCoast"),inline = T)                  
+          )
+        ) 
       )
     )
   )
@@ -105,8 +148,7 @@ server <- function(input, output) {
   
   ########### 100 fit isobar check box ##############
   observeEvent(input$shapefiles, {
-print(input$shapefiles)
-    
+
     for (ichoice in 1:length(input$shapefiles)) {
         leafletProxy("help_map") %>% clearGroup(group = input$shapefile[ichoice]) %>%
         addPolygons(group = input$shapefile[ichoice] ,data = eval(parse(text=input$shapefile[ichoice])),stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
@@ -186,6 +228,7 @@ print(input$shapefiles)
         param <- param %>% dplyr::filter(Action != "")
     
         #Saves output and runs model---------------------------------------------------
+        
           write.csv(param, 
                     file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), na="",row.names = F)
           
@@ -196,15 +239,97 @@ print(input$shapefiles)
           message = function(m) {
             shinyjs::html(id = "run-text", html = paste0(m$message,"<br>"), add = TRUE)
           })
+          
       })
   
+  #View output tab---------------------------------------------------------------------
 
-  # #Observes the "Choose existing scenario button"
-  # observeEvent(input$existing_scenarios, {
-  #   selected_scenario <- read.csv(paste0(file.path("InputSpreadsheets", input$existing_scenarios),".csv"))
-  # })
-
+  ### Function to read in images
+  read.image <- function(image.file){
+    im <- load.image(image.file)
+    if(dim(im)[4] > 3){
+      im <- imappend(channels(im, 1:3), 'c')
+    }
+    im
+  }
   
+  ### Generic function for plotting the image
+  app.plot <- function(im, clicks.x = NULL, clicks.y = NULL, lineslist = NULL){
+    if(is.null(im)){
+      return(NULL)
+    }
+    if(is.null(ranges$x) | is.null(ranges$y)){
+      plot(im, axes = F, ann=FALSE)
+    }else{
+      plot(im, axes = F, ann=FALSE, xlim=ranges$x,  ylim=c(ranges$y[2], ranges$y[1]))
+    }
+  }
+  ### Set ranges for zooming
+  ranges <- reactiveValues(x = NULL, y = NULL)
+  
+  ### Code to zoom in on brushed area when double clicking for plot 1
+  observeEvent(input$plot1_dblclick, {
+    brush <- input$plot1_brush
+    if (!is.null(brush)) {
+      ranges$x <- c(brush$xmin, brush$xmax)
+      ranges$y <- c(brush$ymin, brush$ymax)
+      
+    } else {
+      ranges$x <- NULL
+      ranges$y <- NULL
+    }
+  })
+  
+  v <- reactiveValues(
+    originalImage = NULL,
+    imgclick.x = NULL,
+    imgclick.y = NULL
+  )
+  
+  v2 <- reactiveValues(
+    originalImage = NULL,
+    imgclick.x = NULL,
+    imgclick.y = NULL
+  )
+  
+  output$plot1 <- renderPlot({
+
+    
+    matched_plots <- list.files("Scenarios/ExampleRun3/")[str_which(list.files("Scenarios/ExampleRun3/"),
+                                                                    str_remove(input$select_plots, " "))]
+    if (input$log_plots){
+
+      matched_plots <- matched_plots[str_which(matched_plots, "Log")] 
+    } else {
+      matched_plots <- matched_plots[str_which(matched_plots, "Log", negate = T)] 
+    }
+    
+    v$originalImage <- read.image(paste0("Scenarios/ExampleRun3/",matched_plots[1]))
+    v$imgclick.x <- NULL
+    v$imgclick.y <- NULL
+    app.plot(v$originalImage,v$imgclick.x, v$imgclick.y)
+    
+  }, width = 675, height = 750)
+  
+  output$plot2 <- renderPlot({
+    
+    matched_plots <- list.files("Scenarios/ExampleRun3/")[str_which(list.files("Scenarios/ExampleRun3/"),
+                                                                    str_remove(input$select_plots, " "))]
+    if (input$log_plots){
+      
+      matched_plots <- matched_plots[str_which(matched_plots, "Log")] 
+    } else {
+      matched_plots <- matched_plots[str_which(matched_plots, "Log", negate = T)] 
+    }
+    
+    print(paste0("Scenarios/ExampleRun3/",matched_plots[2]))
+    v2$originalImage <- read.image(paste0("Scenarios/ExampleRun3/",matched_plots[2]))
+    v2$imgclick.x <- NULL
+    v2$imgclick.y <- NULL
+    app.plot(v2$originalImage,v2$imgclick.x, v2$imgclick.y)
+
+  }, width = 675, height = 750)
+
 }
 
 shinyApp(ui, server)
