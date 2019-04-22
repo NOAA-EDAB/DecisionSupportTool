@@ -132,8 +132,13 @@ function(input, output, session) {
     colnames(coords) <- c("Long","Lat")
     if(input$shapefile13 == T) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile13")  %>%
-        addPolygons(group = "shapefile13" ,data = StatAreas , stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3) %>% 
-        addAwesomeMarkers(group = "shapefile13",data = coords,lng = ~Long,lat = ~Lat, label = as.character(StatAreas$Id) )
+        addPolygons(group = "shapefile13" ,data = StatAreas , stroke = TRUE, color = '#5a5a5a', 
+                    opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3) %>% 
+        addLabelOnlyMarkers(
+          group = "shapefile13",data = coords,lng = ~Long,
+          lat = ~Lat, label = ~as.character(StatAreas$Id),
+          labelOptions = labelOptions(noHide = T, textOnly = T))
+        # addAwesomeMarkers(group = "shapefile13",data = coords,lng = ~Long,lat = ~Lat, label = as.character(StatAreas$Id) )
       
     } else {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile13")
