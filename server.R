@@ -8,7 +8,6 @@ function(input, output) {
       addProviderTiles(providers$Esri.OceanBasemap) %>%
       addScaleBar(position = 'bottomright', options = scaleBarOptions(maxWidth = 250))
     
-    
   })
   
   
