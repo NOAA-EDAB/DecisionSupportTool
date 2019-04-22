@@ -119,7 +119,7 @@ ui <- dashboardPage(
       tabItem(tabName = "help",
               fluidPage(
               shinydashboard::box(width = NULL, solidHeader = TRUE, status = 'primary', leafletOutput('help_map',width="100%",height="80vh")),
-              absolutePanel(top = 100, left = 280),
+              absolutePanel(top = 100, left = 280,
 
           #                   sliderInput("range", "Magnitudes", 1,10,
           #                               value = range(1:10), step = 0.1),
@@ -142,6 +142,7 @@ ui <- dashboardPage(
           checkboxInput(inputId='shapefile13',label="SA_DT",value = F),
           checkboxInput(inputId='shapefile14',label="SA_537",value = F)
         ) 
+      )
       )
     )
   )
