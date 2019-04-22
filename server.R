@@ -149,12 +149,13 @@ function(input, output, session) {
     if (input$existing_scenarios == ""){
       print(DF)
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
+        hot_cols(colWidths = c(100,50)) %>% 
         hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
         hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
         hot_col(col = "State", type = "autocomplete", source = State) %>% 
         hot_col(col = "StatArea", type = "autocomplete", source = StatArea) %>% 
         hot_col(col = "Fishery", type = "autocomplete", source = Fishery) %>% 
-        hot_col(col = "Shapefile", strict = F, type = "autocomplete") %>% 
+        hot_col(col = "Shapefile", strict = F, type = "autocomplete", source = shapefile_names) %>% 
         hot_col(col = "Months", type = "autocomplete", source = Months) %>%
         hot_col(col = "Percentage", type = "numeric", strict = F) %>% 
         hot_col(col = "TrapRedistributionArea", type = "autocomplete", source = TrapRedistributionArea) %>% 
@@ -166,12 +167,13 @@ function(input, output, session) {
       DF <- read.csv(paste0(here::here("InputSpreadsheets",input$existing_scenarios),".csv"))
       print(paste("HERE",DF))
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
+        hot_cols(colWidths = c(100,50)) %>% 
         hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
         hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
         hot_col(col = "State", type = "autocomplete", source = State) %>% 
         hot_col(col = "StatArea", type = "autocomplete", source = StatArea) %>% 
         hot_col(col = "Fishery", type = "autocomplete", source = Fishery) %>% 
-        hot_col(col = "Shapefile", strict = F, type = "autocomplete") %>% 
+        hot_col(col = "Shapefile", strict = F, type = "autocomplete", source = shapefile_names) %>% 
         hot_col(col = "Months", type = "autocomplete", source = Months) %>%
         hot_col(col = "Percentage", type = "numeric", strict = F) %>% 
         hot_col(col = "TrapRedistributionArea", type = "autocomplete", source = TrapRedistributionArea) %>% 
