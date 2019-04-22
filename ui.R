@@ -19,7 +19,7 @@ library(stringr)
 #Source helper functions
 r.dir <- here::here("R")
 
-source(file.path(r.dir,"read_shapefiles.R"))
+# source(file.path(r.dir,"read_shapefiles.R"))
 source(file.path(r.dir,"model-specs.R"))
 source("function_DecisionSupportTool_V1.2.R")
 source(file.path(r.dir,"run_decisiontool.R"))
@@ -54,7 +54,9 @@ ui <- dashboardPage(
                               "Choose existing scenario:",
                               selected = "",
                               c("",existing_input_scenarios),
-                              multiple = F)
+                              multiple = F),
+                  actionButton("update_list",
+                               "Update file list")
                   )
                 ),
               fluidRow(

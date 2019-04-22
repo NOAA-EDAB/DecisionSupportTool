@@ -1,5 +1,5 @@
 #Server code
-function(input, output) {
+function(input, output, session) {
   
   output$help_map = renderLeaflet({
     
@@ -129,13 +129,25 @@ function(input, output) {
   })
   
   
+  observeEvent(input$update_list,{
+    #get existing scenarios for listing as scenaerio inputs
+    existing_input_csvs <- list.files(here::here("InputSpreadsheets"))
+    existing_input_scenarios <- stringr::str_remove(existing_input_csvs, ".csv|.xlsx")
+    
+    # Can also set the label and select items
+    updateSelectInput(session,
+                      "existing_scenarios",
+                      choices = existing_input_scenarios,
+                      selected = "")
+  })
+
+  
   
   #Specifies table layout for custom input parameters
   output$hot = renderRHandsontable({
-    print(input$existing_scenarios)
     #Show blank template if no input file is chosen
     if (input$existing_scenarios == ""){
-      
+      print(DF)
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
         hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
         hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
@@ -151,7 +163,8 @@ function(input, output) {
       #Show filled template if input file is chosen
     } else {
       
-      DF <- read.csv(paste0(file.path("InputSpreadsheets",input$existing_scenarios),".csv"))
+      DF <- read.csv(paste0(here::here("InputSpreadsheets",input$existing_scenarios),".csv"))
+      print(paste("HERE",DF))
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
         hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
         hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
@@ -208,7 +221,13 @@ function(input, output) {
     #Run decision tool function here. Will print messages associated w/ function in UI
     withCallingHandlers({
       shinyjs::html("run-text", "")
-      run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
+      tryCatch({
+        run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
+      },
+      error = function(e){
+        message("Goofed")
+      })
+      
     },
     message = function(m) {
       shinyjs::html(id = "run-text", html = paste0(m$message,"<br>"), add = TRUE)
