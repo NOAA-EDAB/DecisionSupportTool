@@ -1,134 +1,17 @@
-library(shinydashboard)
-library(htmlwidgets)
-library(rhandsontable)
-library(rgdal)
-library(sp)
-library(maps)
-library(maptools)
-library(grid)
-library(gtable)
-library(gridExtra)
-library(maptools)
-library(shinyjs)
-library(leaflet)
-
-#Source helper functions
-r.dir <- here::here("R")
-source(file.path(r.dir,"read_shapefiles.R"))
-source(file.path(r.dir,"model-specs.R"))
-source("function_DecisionSupportTool_V1.2.R")
-source(file.path(r.dir,"run_decisiontool.R"))
-previousShapefiles <- NULL
-
-
-#User interface
-
-ui <- dashboardPage(
-  dashboardHeader(title = "ALW TRT Scenario Planning", titleWidth = 300),
-  dashboardSidebar(    
-    sidebarMenu(
-    menuItem("Specify Model", tabName = "specify_model", icon = icon("dashboard")),
-    menuItem("View Output", tabName = "view_output", icon = icon("th")),
-    menuItem("Help", tabName = "help", icon = icon("question"))
-    )
-  ),
-  dashboardBody(
-    tabItems(
-      
-      # First tab content
-      tabItem(tabName = "specify_model",
-              h4("Specify scenarios and scenario parameters"),
-              fluidRow(
-                box(
-                  textInput("filename", label = "Enter new scenario name:", value = NULL)
-                  ),
-                box(
-                  selectInput("existing_scenarios",
-                              "Choose existing scenario:",
-                              selected = "",
-                              c("",existing_input_scenarios),
-                              multiple = F)
-                  )
-                ),
-              fluidRow(
-                box(
-                  
-                  rHandsontableOutput("hot", width = "100%"),
-                  actionButton(inputId="run",label="Run model"),
-                  helpText('Parameterize actions by entering information into the spreadsheet above.
-                           Right click and select "Insert Row Above" to incorporate multiple actions into the
-                           scenario.'),
-                  width = 12
-                  )
-                ),
-              fluidRow(
-                shinyjs::useShinyjs(),
-                  textOutput("run-text")
-                )
-              ),
-      tabItem(tabName = "view_output",
-        fluidRow(
-            
-          )
-        ),
-      tabItem(tabName = "help",
-              fluidPage(
-              shinydashboard::box(width = NULL, solidHeader = TRUE, status = 'primary', leafletOutput('help_map',width="100%",height="80vh")),
-              
-              absolutePanel(top = 100, left = 320,
-                    # sliderInput("range", "Magnitudes", 1,10,
-                    #                     value = range(1:10), step = 0.1),
-                    # # checkboxGroupInput(inputId='shapefiles',label="Display Options",c("100ft"="iso100ft","EastCoast"="EastCoastLines","GB"="GB","GOM"="GOM"),
-                    #                            inline = T)
-                    h3("Display options"),
-                    checkboxInput(inputId='shapefile1',label="100ft",value = F),
-                    checkboxInput(inputId='shapefile2',label="EastCoast",value = F),
-                    checkboxInput(inputId='shapefile3',label="GB",value = F),
-                    checkboxInput(inputId='shapefile4',label="GOM",value = F),
-                    checkboxInput(inputId='shapefile5',label="GSC_Gillnet",value = F),
-                    checkboxInput(inputId='shapefile6',label="GSC_Trap",value = F),
-                    checkboxInput(inputId='shapefile7',label="GSC_Sliver",value = F),
-                    checkboxInput(inputId='shapefile8',label="LCMAs",value = F),
-                    checkboxInput(inputId='shapefile9',label="MASS_RA",value = F),
-                    checkboxInput(inputId='shapefile10',label="MASS_RANE",value = F),
-                    checkboxInput(inputId='shapefile11',label="NEA_NR",value = F),
-                    checkboxInput(inputId='shapefile12',label="NEA_WGOM",value = F),
-                    checkboxInput(inputId='shapefile13',label="SA_DT",value = F),
-                    checkboxInput(inputId='shapefile14',label="SA_537",value = F)
-                    
-              )
-                
-      ) #,
-      
-      )
-    )
-  )
-)
-
-
 #Server code
-server <- function(input, output) {
+function(input, output) {
   
-
   output$help_map = renderLeaflet({
     # initiates rendering. This all remains same for whole instance of app
     leaflet() %>%
       setView(lng = -68.73742, lat = 42.31386, zoom = 6) %>%
       addProviderTiles(providers$Esri.OceanBasemap) %>%
       addScaleBar(position = 'bottomright', options = scaleBarOptions(maxWidth = 250))
-
-
+    
+    
   })
   
-  ########### 100 fit isobar check box ##############
-  # observeEvent(input$shapefiles, {
-  #     for (ichoice in 1:length(input$shapefiles)) {
-  #       group <- input$shapefiles[ichoice]
-  #       data  <-  eval(parse(text=group))
-  #       leafletProxy("help_map") %>% clearGroup(group = group)  %>%
-  #          addPolygons(group = group ,data = data ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-  #     }
-  # })
+  
   ###############################################################################################
   ################### HORRIBLE CODE . NEED TO FIND A BETTER WAY #################################
   ###############################################################################################
@@ -192,9 +75,9 @@ server <- function(input, output) {
     if(input$shapefile8 == T) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile8")  %>%
         addPolygons(group = "shapefile8" ,data = LCMAs ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-      } else {
-        leafletProxy("help_map") %>% clearGroup(group = "shapefile8")
-        }
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile8")
+    }
   })  
   observeEvent(input$shapefile9, {
     if(input$shapefile9 == T) {
@@ -244,12 +127,15 @@ server <- function(input, output) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile14")
     }
   })
-
+  
+  
+  
   #Specifies table layout for custom input parameters
   output$hot = renderRHandsontable({
+    print(input$existing_scenarios)
     #Show blank template if no input file is chosen
     if (input$existing_scenarios == ""){
-
+      
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
         hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
         hot_col(col = "LMA", type = "autocomplete", source = LMA) %>% 
@@ -261,8 +147,8 @@ server <- function(input, output) {
         hot_col(col = "Percentage", type = "numeric", strict = F) %>% 
         hot_col(col = "TrapRedistributionArea", type = "autocomplete", source = TrapRedistributionArea) %>% 
         hot_col(col = "TrapRedistributionMethod", type = "autocomplete", source = TrapRedistributionMethod)
-    
-    #Show filled template if input file is chosen
+      
+      #Show filled template if input file is chosen
     } else {
       
       DF <- read.csv(paste0(file.path("InputSpreadsheets",input$existing_scenarios),".csv"))
@@ -298,43 +184,157 @@ server <- function(input, output) {
     
   })
   
-  #Observes the "Run Model" button   
+  #Observes the "Run Model" button-------------------------------------------------------------------
   observeEvent(input$run, {
     
-        #Converts table input into something shiny can use ----------------------------
-        param <- hot_to_r(input$hot) 
-        param[is.na(param)] <- ""
-        # dumb workaround. we should be able to declare data types of each column in ui. 
-        param$Action <- as.character(param$Action)
-        param$LMA <- as.character(param$LMA)
-        param$State <- as.character(param$State)
-        param$StatArea <- as.character(param$StatArea)
-        param$Fishery <- as.character(param$Fishery)
-        param$Shapefile <- as.character(param$Shapefile)
-        param$Months <- as.character(param$Months)
-        #####################################
-        param <- param %>% dplyr::filter(Action != "")
+    #Converts table input into something shiny can use 
     
-        #Saves output and runs model---------------------------------------------------
-          write.csv(param, 
-                    file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), na="",row.names = F)
-          
-          withCallingHandlers({
-            shinyjs::html("run-text", "")
-            run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
-          },
-          message = function(m) {
-            shinyjs::html(id = "run-text", html = paste0(m$message,"<br>"), add = TRUE)
-          })
-      })
+    param <- hot_to_r(input$hot) 
+    param[is.na(param)] <- ""
+    param$Action <- as.character(param$Action)
+    param$LMA <- as.character(param$LMA)
+    param$State <- as.character(param$State)
+    param$StatArea <- as.character(param$StatArea)
+    param$Fishery <- as.character(param$Fishery)
+    param$Shapefile <- as.character(param$Shapefile)
+    param$Months <- as.character(param$Months)
+    param <- param %>% dplyr::filter(Action != "")
+    
+    #Saves output and runs model
+    
+    write.csv(param, 
+              file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), na="",row.names = F)
+    
+    #Run decision tool function here. Will print messages associated w/ function in UI
+    withCallingHandlers({
+      shinyjs::html("run-text", "")
+      run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
+    },
+    message = function(m) {
+      shinyjs::html(id = "run-text", html = paste0(m$message,"<br>"), add = TRUE)
+    })
+    
+  })
   
-
-  # #Observes the "Choose existing scenario button"
-  # observeEvent(input$existing_scenarios, {
-  #   selected_scenario <- read.csv(paste0(file.path("InputSpreadsheets", input$existing_scenarios),".csv"))
-  # })
-
+  #View output tab-----------------------------------------------------------------------------------
+  
+  ### Function to read in png files
+  read.image <- function(image.file){
+    im <- load.image(image.file)
+    if(dim(im)[4] > 3){
+      im <- imappend(channels(im, 1:3), 'c')
+    }
+    im
+  }
+  
+  ### Functions for image zooming-----------------------------------------------------------------------
+  ## Code for image zoom was written by Jacob Fiksel
+  ## See https://jfiksel.github.io/2017-02-26-cropping_images_with_a_shiny_app/
+  
+  
+  #A function to plot the images after they've been loaded
+  app.plot <- function(im, clicks.x = NULL, clicks.y = NULL, lineslist = NULL){
+    if(is.null(im)){
+      return(NULL)
+    }
+    if(is.null(ranges$x) | is.null(ranges$y)){
+      plot(im, axes = F, ann=FALSE)
+    }else{
+      plot(im, axes = F, ann=FALSE, xlim=ranges$x,  ylim=c(ranges$y[2], ranges$y[1]))
+    }
+  }
+  
+  ### Set ranges for zooming
+  ranges <- reactiveValues(x = NULL, y = NULL)
+  
+  ### Code to zoom in on brushed area when double clicking for plot 1
+  observeEvent(input$plot1_dblclick, {
+    brush <- input$plot1_brush
+    if (!is.null(brush)) {
+      ranges$x <- c(brush$xmin, brush$xmax)
+      ranges$y <- c(brush$ymin, brush$ymax)
+      
+    } else {
+      ranges$x <- NULL
+      ranges$y <- NULL
+    }
+  })
+  
+  #Initialize images as reactive-------------------------------------------------------------------------
+  v <- reactiveValues(
+    originalImage = NULL,
+    imgclick.x = NULL,
+    imgclick.y = NULL
+  )
+  
+  v2 <- reactiveValues(
+    originalImage = NULL,
+    imgclick.x = NULL,
+    imgclick.y = NULL
+  )
+  
+  #A function to identify file paths for results --------------------------------------------------------
+  find_result <- function(){
+    
+    if (input$filename == "") {
+      scenario_path <- paste0("Scenarios/",input$existing_scenarios,"/")
+    } else {
+      scenario_path <- paste0("Scenarios/",input$filename,"/")
+    }
+    
+    print(paste0("Results in ",scenario_path))
+    
+    matched_plots <- list.files(scenario_path) [str_which(list.files(scenario_path),
+                                                          str_remove(input$select_plots, " "))]
+    
+    if (input$log_plots){
+      matched_plots <- matched_plots[str_which(matched_plots, "Log")] 
+    } else {
+      matched_plots <- matched_plots[str_which(matched_plots, "Log", negate = T)] 
+    }
+    
+    matched_plots <- file.path(scenario_path,matched_plots)
+    return(matched_plots)
+  }
+  
+  #Validation function to prevent Shiny from loading images without a path to start from-----------------
+  validate_function <- function() {
+    if (input$filename == "" & input$existing_scenarios == ""){
+      "Please select an existing scenario or create your own."
+    } else {
+      NULL
+    }
+  }
+  
+  #Implement the validation function and make the filenames reactive  
+  matched_plots <- reactive({
+     # Make sure requirements are met before looking for results
+    validate(
+      validate_function()
+    ) 
+    find_result()
+  })
+  
+  #Plots files found using the functions above-----------------------------------------------------------
+  
+  #Left plot
+  output$plot1 <- renderPlot({
+    print(matched_plots())
+    v$originalImage <- read.image(matched_plots()[1])
+    v$imgclick.x <- NULL
+    v$imgclick.y <- NULL
+    app.plot(v$originalImage,v$imgclick.x, v$imgclick.y)
+    
+  }, width = 675, height = 750)
+  
+  #Right plot
+  output$plot2 <- renderPlot({
+    print(matched_plots())
+    v2$originalImage <- read.image(matched_plots()[2])
+    v2$imgclick.x <- NULL
+    v2$imgclick.y <- NULL
+    app.plot(v2$originalImage,v2$imgclick.x, v2$imgclick.y)
+    
+  }, width = 675, height = 750)
   
 }
-
-shinyApp(ui, server)

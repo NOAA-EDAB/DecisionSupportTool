@@ -119,12 +119,29 @@ ui <- dashboardPage(
       tabItem(tabName = "help",
               fluidPage(
               shinydashboard::box(width = NULL, solidHeader = TRUE, status = 'primary', leafletOutput('help_map',width="100%",height="80vh")),
-              absolutePanel(top = 100, left = 280,
-                            sliderInput("range", "Magnitudes", 1,10,
-                                        value = range(1:10), step = 0.1),
-                            checkboxGroupInput(inputId='shapefiles',label="Display Options",c("100f"="iso100ft","EastCoast"="EastCoastLines","GB"="GB","GOM"="GOM"),
-                                               selected = c("iso100f","EastCoast"),inline = T)                  
-          )
+              absolutePanel(top = 100, left = 280),
+
+          #                   sliderInput("range", "Magnitudes", 1,10,
+          #                               value = range(1:10), step = 0.1),
+          #                   checkboxGroupInput(inputId='shapefiles',label="Display Options",c("100f"="iso100ft","EastCoast"="EastCoastLines","GB"="GB","GOM"="GOM"),
+          #                                      selected = c("iso100f","EastCoast"),inline = T)                  
+          # )
+          h3("Display options"),
+          checkboxInput(inputId='shapefile1',label="100ft",value = F),
+          checkboxInput(inputId='shapefile2',label="EastCoast",value = F),
+          checkboxInput(inputId='shapefile3',label="GB",value = F),
+          checkboxInput(inputId='shapefile4',label="GOM",value = F),
+          checkboxInput(inputId='shapefile5',label="GSC_Gillnet",value = F),
+          checkboxInput(inputId='shapefile6',label="GSC_Trap",value = F),
+          checkboxInput(inputId='shapefile7',label="GSC_Sliver",value = F),
+          checkboxInput(inputId='shapefile8',label="LCMAs",value = F),
+          checkboxInput(inputId='shapefile9',label="MASS_RA",value = F),
+          checkboxInput(inputId='shapefile10',label="MASS_RANE",value = F),
+          checkboxInput(inputId='shapefile11',label="NEA_NR",value = F),
+          checkboxInput(inputId='shapefile12',label="NEA_WGOM",value = F),
+          checkboxInput(inputId='shapefile13',label="SA_DT",value = F),
+          checkboxInput(inputId='shapefile14',label="SA_537",value = F)
+          
         ) 
       )
     )
