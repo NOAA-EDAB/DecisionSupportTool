@@ -18,7 +18,7 @@ function(input, output, session) {
   observeEvent(input$shapefile1, {
     if(input$shapefile1 == T) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile1")  %>%
-        addPolygons(group = "shapefile1" ,data = iso100ft ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+        addPolygons(group = "shapefile1" ,data = SouthShoreA ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
     } else {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile1")
     }
@@ -26,7 +26,7 @@ function(input, output, session) {
   observeEvent(input$shapefile2, {
     if(input$shapefile2 == T) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile2")  %>%
-        addPolygons(group = "shapefile2" ,data = EastCoastLines ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+        addPolygons(group = "shapefile2" ,data = SouthShoreB ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
     } else {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile2")
     }
@@ -50,7 +50,7 @@ function(input, output, session) {
   observeEvent(input$shapefile5, {
     if(input$shapefile5 == T) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile5")  %>%
-        addPolygons(group = "shapefile5" ,data = GSC_Gillnet ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+        addPolygons(group = "shapefile5" ,data = SouthShoreC ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
     } else {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile5")
     }
@@ -58,7 +58,7 @@ function(input, output, session) {
   observeEvent(input$shapefile6, {
     if(input$shapefile6 == T) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile6")  %>%
-        addPolygons(group = "shapefile6" ,data = GSC_Trap ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+        addPolygons(group = "shapefile6" ,data = CCBay ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
     } else {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile6")
     }
@@ -66,17 +66,33 @@ function(input, output, session) {
   observeEvent(input$shapefile7, {
     if(input$shapefile7 == T) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile7")  %>%
-        addPolygons(group = "shapefile7" ,data = GSC_Sliver ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+        addPolygons(group = "shapefile7" ,data = MassExpansion ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
     } else {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile7")
     }
   })
-  observeEvent(input$shapefile8, {
-    if(input$shapefile8 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile8")  %>%
-        addPolygons(group = "shapefile8" ,data = LCMAs ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+  observeEvent(input$shapefile8a, {
+    if(input$shapefile8a == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile8a")  %>%
+        addPolygons(group = "shapefile8a" ,data =raster::subset(LCMAs,Name=="A1")  ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
     } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile8")
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile8a")
+    }
+  })
+  observeEvent(input$shapefile8b, {
+    if(input$shapefile8b == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile8b")  %>%
+        addPolygons(group = "shapefile8b" ,data =raster::subset(LCMAs,Name=="A2") ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile8b")
+    }
+  }) 
+  observeEvent(input$shapefile8c, {
+    if(input$shapefile8c == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile8c")  %>%
+        addPolygons(group = "shapefile8c" ,data =raster::subset(LCMAs,Name=="A3")  ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile8c")
     }
   })  
   observeEvent(input$shapefile9, {
@@ -111,18 +127,23 @@ function(input, output, session) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile12")
     }
   })
-  observeEvent(input$shapefile13, {
+  observeEvent(input$shapefile13, { #STatAreas
+    coords <- as.data.frame(coordinates(StatAreas))
+    colnames(coords) <- c("Long","Lat")
     if(input$shapefile13 == T) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile13")  %>%
-        addPolygons(group = "shapefile13" ,data = SA_DT ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+        addPolygons(group = "shapefile13" ,data = StatAreas , stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3) %>% 
+        addAwesomeMarkers(group = "shapefile13",data = coords,lng = ~Long,lat = ~Lat, label = as.character(StatAreas$Id) )
+      
     } else {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile13")
     }
   })
+
   observeEvent(input$shapefile14, {
     if(input$shapefile14 == T) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile14")  %>%
-        addPolygons(group = "shapefile14" ,data = SA_537 ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+        addPolygons(group = "shapefile14" ,data = OffshoreA ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
     } else {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile14")
     }
