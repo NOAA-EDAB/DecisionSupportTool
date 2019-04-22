@@ -1,5 +1,5 @@
 ---
-output: pdf_document
+output: html_document
 params: 
     set_title: "My Title!"
     set_path: "`r params$set_path`"

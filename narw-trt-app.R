@@ -11,15 +11,20 @@ library(gridExtra)
 library(maptools)
 library(shinyjs)
 library(leaflet)
+library(imager)
+library(shinyEffects)
 
 #Source helper functions
 r.dir <- here::here("R")
-source(file.path(r.dir,"read_shapefiles.R"))
+
+# source(file.path(r.dir,"read_shapefiles.R"))
 source(file.path(r.dir,"model-specs.R"))
 source("function_DecisionSupportTool_V1.2.R")
 source(file.path(r.dir,"run_decisiontool.R"))
 previousShapefiles <- NULL
 
+#A zoom effect for boxes
+setZoom <- shinyEffects::setZoom
 
 #User interface
 
@@ -32,7 +37,8 @@ ui <- dashboardPage(
     menuItem("Help", tabName = "help", icon = icon("question"))
     )
   ),
-  dashboardBody(
+  dashboardBody(    
+    
     tabItems(
       
       # First tab content
@@ -68,38 +74,60 @@ ui <- dashboardPage(
               ),
       tabItem(tabName = "view_output",
         fluidRow(
-            
+          box(
+            selectInput("select_plots", label = "Select plots to view:", selected = "Total Threat",
+                        choices = list(
+                          "Trap Density",
+                          "Trawl Length",
+                          "Line Density",
+                          "Line Diameter",
+                          "Mean Threat",
+                          "Total Threat",
+                          "Risk Score",
+                          "Whale Habitat"
+                          )
+                        ),
+            checkboxInput("log_plots", label = "Log transform?", FALSE)
+          )
+        ),
+        fluidRow(
+            box(
+              h4("Default model output:"),
+              plotOutput("plot1",click="plot1_click",
+                         dblclick = "plot1_dblclick",
+                         width = "650px",
+                         height = "750px",
+                         brush = brushOpts(
+                           id = "plot1_brush",
+                           resetOnNew = TRUE
+                )
+              )
+            ),
+            box(
+              h4("Scenario model output:"),
+              plotOutput("plot2", click="plot2_click",
+                         dblclick = "plot2_dblclick",
+                         width = "650px",
+                         height = "750px",
+                         brush = brushOpts(
+                           id = "plot2_brush",
+                           resetOnNew = TRUE
+                )
+              )
+            )
           )
         ),
       tabItem(tabName = "help",
               fluidPage(
               shinydashboard::box(width = NULL, solidHeader = TRUE, status = 'primary', leafletOutput('help_map',width="100%",height="80vh")),
-              
-              absolutePanel(top = 100, left = 320,
-                    # sliderInput("range", "Magnitudes", 1,10,
-                    #                     value = range(1:10), step = 0.1),
-                    # # checkboxGroupInput(inputId='shapefiles',label="Display Options",c("100ft"="iso100ft","EastCoast"="EastCoastLines","GB"="GB","GOM"="GOM"),
-                    #                            inline = T)
-                    h3("Display options"),
-                    checkboxInput(inputId='shapefile1',label="100ft",value = F),
-                    checkboxInput(inputId='shapefile2',label="EastCoast",value = F),
-                    checkboxInput(inputId='shapefile3',label="GB",value = F),
-                    checkboxInput(inputId='shapefile4',label="GOM",value = F),
-                    checkboxInput(inputId='shapefile5',label="GSC_Gillnet",value = F),
-                    checkboxInput(inputId='shapefile6',label="GSC_Trap",value = F),
-                    checkboxInput(inputId='shapefile7',label="GSC_Sliver",value = F),
-                    checkboxInput(inputId='shapefile8',label="LCMAs",value = F),
-                    checkboxInput(inputId='shapefile9',label="MASS_RA",value = F),
-                    checkboxInput(inputId='shapefile10',label="MASS_RANE",value = F),
-                    checkboxInput(inputId='shapefile11',label="NEA_NR",value = F),
-                    checkboxInput(inputId='shapefile12',label="NEA_WGOM",value = F),
-                    checkboxInput(inputId='shapefile13',label="SA_DT",value = F),
-                    checkboxInput(inputId='shapefile14',label="SA_537",value = F)
-                    
-              )
-                
-      ) #,
-      
+
+              absolutePanel(top = 100, left = 280,
+                            sliderInput("range", "Magnitudes", 1,10,
+                                        value = range(1:10), step = 0.1),
+                            checkboxGroupInput(inputId='shapefiles',label="Display Options",c("100f"="iso100ft","EastCoast"="EastCoastLines","GB"="GB","GOM"="GOM"),
+                                               selected = c("iso100f","EastCoast"),inline = T)                  
+          )
+        ) 
       )
     )
   )
@@ -121,127 +149,12 @@ server <- function(input, output) {
   })
   
   ########### 100 fit isobar check box ##############
-  # observeEvent(input$shapefiles, {
-  #     for (ichoice in 1:length(input$shapefiles)) {
-  #       group <- input$shapefiles[ichoice]
-  #       data  <-  eval(parse(text=group))
-  #       leafletProxy("help_map") %>% clearGroup(group = group)  %>%
-  #          addPolygons(group = group ,data = data ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-  #     }
-  # })
-  ###############################################################################################
-  ################### HORRIBLE CODE . NEED TO FIND A BETTER WAY #################################
-  ###############################################################################################
-  observeEvent(input$shapefile1, {
-    if(input$shapefile1 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile1")  %>%
-        addPolygons(group = "shapefile1" ,data = iso100ft ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile1")
-    }
-  })
-  observeEvent(input$shapefile2, {
-    if(input$shapefile2 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile2")  %>%
-        addPolygons(group = "shapefile2" ,data = EastCoastLines ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile2")
-    }
-  })
-  observeEvent(input$shapefile3, {
-    if(input$shapefile3 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile3")  %>%
-        addPolygons(group = "shapefile3" ,data = GB,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile3")
-    }
-  })
-  observeEvent(input$shapefile4, {
-    if(input$shapefile4 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile4")  %>%
-        addPolygons(group = "shapefile4" ,data = GOM ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile4")
-    }
-  })
-  observeEvent(input$shapefile5, {
-    if(input$shapefile5 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile5")  %>%
-        addPolygons(group = "shapefile5" ,data = GSC_Gillnet ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile5")
-    }
-  })
-  observeEvent(input$shapefile6, {
-    if(input$shapefile6 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile6")  %>%
-        addPolygons(group = "shapefile6" ,data = GSC_Trap ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile6")
-    }
-  })
-  observeEvent(input$shapefile7, {
-    if(input$shapefile7 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile7")  %>%
-        addPolygons(group = "shapefile7" ,data = GSC_Sliver ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile7")
-    }
-  })
-  observeEvent(input$shapefile8, {
-    if(input$shapefile8 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile8")  %>%
-        addPolygons(group = "shapefile8" ,data = LCMAs ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-      } else {
-        leafletProxy("help_map") %>% clearGroup(group = "shapefile8")
-        }
-  })  
-  observeEvent(input$shapefile9, {
-    if(input$shapefile9 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile9")  %>%
-        addPolygons(group = "shapefile9" ,data = MASS_RA ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile9")
-    }
-  })
-  observeEvent(input$shapefile10, {
-    if(input$shapefile10 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile10")  %>%
-        addPolygons(group = "shapefile10" ,data = MASS_RANE ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile10")
-    }
-  }) 
-  observeEvent(input$shapefile11, {
-    if(input$shapefile11 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile11")  %>%
-        addPolygons(group = "shapefile11" ,data = NEA_NR ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile11")
-    }
-  })
-  observeEvent(input$shapefile12, {
-    if(input$shapefile12 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile12")  %>%
-        addPolygons(group = "shapefile12" ,data = NEA_WGOM ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile12")
-    }
-  })
-  observeEvent(input$shapefile13, {
-    if(input$shapefile13 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile13")  %>%
-        addPolygons(group = "shapefile13" ,data = SA_DT ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile13")
-    }
-  })
-  observeEvent(input$shapefile14, {
-    if(input$shapefile14 == T) {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile14")  %>%
-        addPolygons(group = "shapefile14" ,data = SA_537 ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
-    } else {
-      leafletProxy("help_map") %>% clearGroup(group = "shapefile14")
+
+  observeEvent(input$shapefiles, {
+
+    for (ichoice in 1:length(input$shapefiles)) {
+        leafletProxy("help_map") %>% clearGroup(group = input$shapefile[ichoice]) %>%
+        addPolygons(group = input$shapefile[ichoice] ,data = eval(parse(text=input$shapefile[ichoice])),stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
     }
   })
 
@@ -316,6 +229,7 @@ server <- function(input, output) {
         param <- param %>% dplyr::filter(Action != "")
     
         #Saves output and runs model---------------------------------------------------
+        
           write.csv(param, 
                     file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), na="",row.names = F)
           
@@ -326,15 +240,97 @@ server <- function(input, output) {
           message = function(m) {
             shinyjs::html(id = "run-text", html = paste0(m$message,"<br>"), add = TRUE)
           })
+          
       })
   
+  #View output tab---------------------------------------------------------------------
 
-  # #Observes the "Choose existing scenario button"
-  # observeEvent(input$existing_scenarios, {
-  #   selected_scenario <- read.csv(paste0(file.path("InputSpreadsheets", input$existing_scenarios),".csv"))
-  # })
-
+  ### Function to read in images
+  read.image <- function(image.file){
+    im <- load.image(image.file)
+    if(dim(im)[4] > 3){
+      im <- imappend(channels(im, 1:3), 'c')
+    }
+    im
+  }
   
+  ### Generic function for plotting the image
+  app.plot <- function(im, clicks.x = NULL, clicks.y = NULL, lineslist = NULL){
+    if(is.null(im)){
+      return(NULL)
+    }
+    if(is.null(ranges$x) | is.null(ranges$y)){
+      plot(im, axes = F, ann=FALSE)
+    }else{
+      plot(im, axes = F, ann=FALSE, xlim=ranges$x,  ylim=c(ranges$y[2], ranges$y[1]))
+    }
+  }
+  ### Set ranges for zooming
+  ranges <- reactiveValues(x = NULL, y = NULL)
+  
+  ### Code to zoom in on brushed area when double clicking for plot 1
+  observeEvent(input$plot1_dblclick, {
+    brush <- input$plot1_brush
+    if (!is.null(brush)) {
+      ranges$x <- c(brush$xmin, brush$xmax)
+      ranges$y <- c(brush$ymin, brush$ymax)
+      
+    } else {
+      ranges$x <- NULL
+      ranges$y <- NULL
+    }
+  })
+  
+  v <- reactiveValues(
+    originalImage = NULL,
+    imgclick.x = NULL,
+    imgclick.y = NULL
+  )
+  
+  v2 <- reactiveValues(
+    originalImage = NULL,
+    imgclick.x = NULL,
+    imgclick.y = NULL
+  )
+  
+  output$plot1 <- renderPlot({
+
+    
+    matched_plots <- list.files("Scenarios/ExampleRun3/")[str_which(list.files("Scenarios/ExampleRun3/"),
+                                                                    str_remove(input$select_plots, " "))]
+    if (input$log_plots){
+
+      matched_plots <- matched_plots[str_which(matched_plots, "Log")] 
+    } else {
+      matched_plots <- matched_plots[str_which(matched_plots, "Log", negate = T)] 
+    }
+    
+    v$originalImage <- read.image(paste0("Scenarios/ExampleRun3/",matched_plots[1]))
+    v$imgclick.x <- NULL
+    v$imgclick.y <- NULL
+    app.plot(v$originalImage,v$imgclick.x, v$imgclick.y)
+    
+  }, width = 675, height = 750)
+  
+  output$plot2 <- renderPlot({
+    
+    matched_plots <- list.files("Scenarios/ExampleRun3/")[str_which(list.files("Scenarios/ExampleRun3/"),
+                                                                    str_remove(input$select_plots, " "))]
+    if (input$log_plots){
+      
+      matched_plots <- matched_plots[str_which(matched_plots, "Log")] 
+    } else {
+      matched_plots <- matched_plots[str_which(matched_plots, "Log", negate = T)] 
+    }
+    
+    print(paste0("Scenarios/ExampleRun3/",matched_plots[2]))
+    v2$originalImage <- read.image(paste0("Scenarios/ExampleRun3/",matched_plots[2]))
+    v2$imgclick.x <- NULL
+    v2$imgclick.y <- NULL
+    app.plot(v2$originalImage,v2$imgclick.x, v2$imgclick.y)
+
+  }, width = 675, height = 750)
+
 }
 
 shinyApp(ui, server)
