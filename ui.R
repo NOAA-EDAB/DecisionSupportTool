@@ -141,7 +141,6 @@ ui <- dashboardPage(
           checkboxInput(inputId='shapefile12',label="NEA_WGOM",value = F),
           checkboxInput(inputId='shapefile13',label="SA_DT",value = F),
           checkboxInput(inputId='shapefile14',label="SA_537",value = F)
-          
         ) 
       )
     )
