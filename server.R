@@ -76,13 +76,13 @@ function(input, output) {
     
   })
   
-  #Observes the "Run Model" button   
+  #Observes the "Run Model" button-------------------------------------------------------------------
   observeEvent(input$run, {
     
-    #Converts table input into something shiny can use ----------------------------
+    #Converts table input into something shiny can use 
+    
     param <- hot_to_r(input$hot) 
     param[is.na(param)] <- ""
-    # dumb workaround. we should be able to declare data types of each column in ui. 
     param$Action <- as.character(param$Action)
     param$LMA <- as.character(param$LMA)
     param$State <- as.character(param$State)
@@ -90,14 +90,14 @@ function(input, output) {
     param$Fishery <- as.character(param$Fishery)
     param$Shapefile <- as.character(param$Shapefile)
     param$Months <- as.character(param$Months)
-    #####################################
     param <- param %>% dplyr::filter(Action != "")
     
-    #Saves output and runs model---------------------------------------------------
+    #Saves output and runs model
     
     write.csv(param, 
               file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), na="",row.names = F)
     
+    #Run decision tool function here. Will print messages associated w/ function in UI
     withCallingHandlers({
       shinyjs::html("run-text", "")
       run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
@@ -108,9 +108,9 @@ function(input, output) {
     
   })
   
-  #View output tab---------------------------------------------------------------------
+  #View output tab-----------------------------------------------------------------------------------
   
-  ### Function to read in images
+  ### Function to read in png files
   read.image <- function(image.file){
     im <- load.image(image.file)
     if(dim(im)[4] > 3){
@@ -119,7 +119,12 @@ function(input, output) {
     im
   }
   
-  ### Generic function for plotting the image
+  ### Functions for image zooming-----------------------------------------------------------------------
+  ## Code for image zoom was written by Jacob Fiksel
+  ## See https://jfiksel.github.io/2017-02-26-cropping_images_with_a_shiny_app/
+  
+  
+  #A function to plot the images after they've been loaded
   app.plot <- function(im, clicks.x = NULL, clicks.y = NULL, lineslist = NULL){
     if(is.null(im)){
       return(NULL)
@@ -130,6 +135,7 @@ function(input, output) {
       plot(im, axes = F, ann=FALSE, xlim=ranges$x,  ylim=c(ranges$y[2], ranges$y[1]))
     }
   }
+  
   ### Set ranges for zooming
   ranges <- reactiveValues(x = NULL, y = NULL)
   
@@ -146,6 +152,7 @@ function(input, output) {
     }
   })
   
+  #Initialize images as reactive-------------------------------------------------------------------------
   v <- reactiveValues(
     originalImage = NULL,
     imgclick.x = NULL,
@@ -158,6 +165,7 @@ function(input, output) {
     imgclick.y = NULL
   )
   
+  #A function to identify file paths for results --------------------------------------------------------
   find_result <- function(){
     
     if (input$existing_scenarios != "") {
@@ -179,6 +187,7 @@ function(input, output) {
     return(matched_plots)
   }
   
+  #Validation function to prevent Shiny from loading images without a path to start from-----------------
   validate_function <- function() {
     if (input$filename == "" & input$existing_scenarios == ""){
       "Please select an existing scenario or create your own."
@@ -187,18 +196,18 @@ function(input, output) {
     }
   }
   
+  #Implement the validation function and make the filenames reactive  
   matched_plots <- reactive({
-   
      # Make sure requirements are met before looking for results
     validate(
       validate_function()
     ) 
-    
     find_result()
-  
   })
   
-  #Plot
+  #Plots files found using the functions above-----------------------------------------------------------
+  
+  #Left plot
   output$plot1 <- renderPlot({
     
     v$originalImage <- read.image(matched_plots()[1])
@@ -208,6 +217,7 @@ function(input, output) {
     
   }, width = 675, height = 750)
   
+  #Right plot
   output$plot2 <- renderPlot({
     print(matched_plots())
     v2$originalImage <- read.image(matched_plots()[2])
