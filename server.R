@@ -2,12 +2,12 @@
 function(input, output) {
   
   output$help_map = renderLeaflet({
+    
     # initiates rendering. This all remains same for whole instance of app
     leaflet() %>%
       setView(lng = -68.73742, lat = 42.31386, zoom = 6) %>%
       addProviderTiles(providers$Esri.OceanBasemap) %>%
       addScaleBar(position = 'bottomright', options = scaleBarOptions(maxWidth = 250))
-    
     
   })
   
