@@ -19,7 +19,7 @@ library(stringr)
 #Source helper functions
 r.dir <- here::here("R")
 
-# source(file.path(r.dir,"read_shapefiles.R"))
+source(file.path(r.dir,"read_shapefiles.R"))
 source(file.path(r.dir,"model-specs.R"))
 source("function_DecisionSupportTool_V1.2.R")
 source(file.path(r.dir,"run_decisiontool.R"))
@@ -119,7 +119,7 @@ ui <- dashboardPage(
       tabItem(tabName = "help",
               fluidPage(
               shinydashboard::box(width = NULL, solidHeader = TRUE, status = 'primary', leafletOutput('help_map',width="100%",height="80vh")),
-              absolutePanel(top = 100, left = 280,
+              absolutePanel(top = 60, left = 320,
 
           #                   sliderInput("range", "Magnitudes", 1,10,
           #                               value = range(1:10), step = 0.1),
