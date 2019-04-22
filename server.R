@@ -1,7 +1,6 @@
 #Server code
 function(input, output) {
   
-  
   output$help_map = renderLeaflet({
     # initiates rendering. This all remains same for whole instance of app
     leaflet() %>%
@@ -168,11 +167,13 @@ function(input, output) {
   #A function to identify file paths for results --------------------------------------------------------
   find_result <- function(){
     
-    if (input$existing_scenarios != "") {
+    if (input$filename == "") {
       scenario_path <- paste0("Scenarios/",input$existing_scenarios,"/")
     } else {
       scenario_path <- paste0("Scenarios/",input$filename,"/")
     }
+    
+    print(paste0("Results in ",scenario_path))
     
     matched_plots <- list.files(scenario_path) [str_which(list.files(scenario_path),
                                                           str_remove(input$select_plots, " "))]
@@ -209,7 +210,7 @@ function(input, output) {
   
   #Left plot
   output$plot1 <- renderPlot({
-    
+    print(matched_plots())
     v$originalImage <- read.image(matched_plots()[1])
     v$imgclick.x <- NULL
     v$imgclick.y <- NULL

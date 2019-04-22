@@ -13,6 +13,8 @@ library(shinyjs)
 library(leaflet)
 library(imager)
 library(shinyEffects)
+library(stringr)
+
 
 #Source helper functions
 r.dir <- here::here("R")
