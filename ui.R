@@ -35,8 +35,8 @@ ui <- dashboardPage(
   dashboardSidebar(    
     sidebarMenu(
     menuItem("Specify Model", tabName = "specify_model", icon = icon("dashboard")),
-    menuItem("View Output", tabName = "view_output", icon = icon("th")),
-    menuItem("Help", tabName = "help", icon = icon("question"))
+    menuItem("View Plots", tabName = "view_plots", icon = icon("th")),
+    menuItem("Visualize Areas", tabName = "visualize_areas", icon = icon("question"))
     )
   ),
   dashboardBody(    
@@ -76,7 +76,7 @@ ui <- dashboardPage(
                   textOutput("run-text")
                 )
               ),
-      tabItem(tabName = "view_output",
+      tabItem(tabName = "view_plots",
         fluidRow(
           box(
             selectInput("select_plots", label = "Select plots to view:", selected = "Total Threat",
@@ -119,7 +119,7 @@ ui <- dashboardPage(
             )
           )
         ),
-      tabItem(tabName = "visualize areas",
+      tabItem(tabName = "visualize_areas",
               fluidPage(
               shinydashboard::box(width = NULL, solidHeader = TRUE, status = 'primary', leafletOutput('help_map',width="100%",height="80vh")),
               absolutePanel(top = 60, left = 320,
