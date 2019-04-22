@@ -14,6 +14,7 @@ library(leaflet)
 library(imager)
 library(shinyEffects)
 library(stringr)
+library(dplyr)
 
 
 #Source helper functions
@@ -56,7 +57,7 @@ ui <- dashboardPage(
                               c("",existing_input_scenarios),
                               multiple = F),
                   actionButton("update_list",
-                               "Update file list")
+                  "Refresh")
                   )
                 ),
               fluidRow(
