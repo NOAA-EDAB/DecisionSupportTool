@@ -19,7 +19,7 @@ For users with [R](https://cran.r-project.org/) and the necessary packages insta
 shiny::runGitHub("DecisionSupportTool", username = "NOAA-EDAB", ref = "master")
 
 ```
-Once you have the app up and running, scenarios can be added one of two ways.
+Once you have the app up and running, scenarios can be added one of two ways. < add screenshots > 
 
 Fill out the ScenarioTemplate tab with the criteria for a model run and save it as a csv file in the InputSpreadsheets directory								
 								
