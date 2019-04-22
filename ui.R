@@ -120,7 +120,7 @@ ui <- dashboardPage(
           )
         ),
 
-      tabItem(tabName = "help",
+      tabItem(tabName = "visualize_areas",
               fluidPage(
               shinydashboard::box(width = NULL, solidHeader = TRUE, status = 'primary', leafletOutput('help_map',width="100%",height="80vh")),
               absolutePanel(top = 60, left = 320,
