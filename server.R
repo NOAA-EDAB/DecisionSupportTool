@@ -130,15 +130,15 @@ function(input, output, session) {
   
   
   observeEvent(input$update_list,{
-    #get existing scenarios for listing as scenaerio inputs
-    existing_input_csvs <- list.files(here::here("InputSpreadsheets"))
-    existing_input_scenarios <- stringr::str_remove(existing_input_csvs, ".csv|.xlsx")
-    
-    # Can also set the label and select items
-    updateSelectInput(session,
-                      "existing_scenarios",
-                      choices = existing_input_scenarios,
-                      selected = "")
+  # get existing scenarios for listing as scenaerio inputs
+  existing_input_csvs <- list.files(here::here("InputSpreadsheets"))
+  existing_input_scenarios <- stringr::str_remove(existing_input_csvs, ".csv|.xlsx")
+
+  # Can also set the label and select items
+  updateSelectInput(session,
+                    "existing_scenarios",
+                    choices = c("",existing_input_scenarios),
+                    selected = "")
   })
 
   
@@ -147,7 +147,7 @@ function(input, output, session) {
   output$hot = renderRHandsontable({
     #Show blank template if no input file is chosen
     if (input$existing_scenarios == ""){
-      print(DF)
+      
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
         hot_cols(colWidths = c(100,50)) %>% 
         hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
@@ -163,9 +163,11 @@ function(input, output, session) {
       
       #Show filled template if input file is chosen
     } else {
-      
+      print(paste("Selected model:",input$existing_scenarios))
+   
+      #For running models back to back in same session. 
       DF <- read.csv(paste0(here::here("InputSpreadsheets",input$existing_scenarios),".csv"))
-      print(paste("HERE",DF))
+      
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
         hot_cols(colWidths = c(100,50)) %>% 
         hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
@@ -178,7 +180,7 @@ function(input, output, session) {
         hot_col(col = "Percentage", type = "numeric", strict = F) %>% 
         hot_col(col = "TrapRedistributionArea", type = "autocomplete", source = TrapRedistributionArea) %>% 
         hot_col(col = "TrapRedistributionMethod", type = "autocomplete", source = TrapRedistributionMethod)
-      
+
     }
   })
   
@@ -215,25 +217,31 @@ function(input, output, session) {
     param$Months <- as.character(param$Months)
     param <- param %>% dplyr::filter(Action != "")
     
-    #Saves output and runs model
     
+    #Saves output and runs model
+    print("Saving parameters to file.")
     write.csv(param, 
-              file = paste0(file.path("InputSpreadsheets",input$filename),".csv"), na="",row.names = F)
+              file = paste0(here::here("InputSpreadsheets",input$filename),".csv"), na="",row.names = F)
     
     #Run decision tool function here. Will print messages associated w/ function in UI
     withCallingHandlers({
       shinyjs::html("run-text", "")
       tryCatch({
+        print('About to run decision tool function.')
         run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
+
       },
       error = function(e){
-        message("Goofed")
+        message("Error in decision tool function.")
       })
       
     },
     message = function(m) {
       shinyjs::html(id = "run-text", html = paste0(m$message,"<br>"), add = TRUE)
     })
+    
+    
+
     
   })
   
@@ -294,7 +302,7 @@ function(input, output, session) {
     imgclick.y = NULL
   )
   
-  #A function to identify file paths for results --------------------------------------------------------
+  #A function to identify file paths for results--------------------------------------------------------
   find_result <- function(){
     
     if (input$filename == "") {
@@ -303,7 +311,7 @@ function(input, output, session) {
       scenario_path <- paste0("Scenarios/",input$filename,"/")
     }
     
-    print(paste0("Results in ",scenario_path))
+    print(paste0("Model output saved in ",scenario_path))
     
     matched_plots <- list.files(scenario_path) [str_which(list.files(scenario_path),
                                                           str_remove(input$select_plots, " "))]
@@ -340,7 +348,7 @@ function(input, output, session) {
   
   #Left plot
   output$plot1 <- renderPlot({
-    print(matched_plots())
+    print(paste0("Figure filenames:",matched_plots()))
     v$originalImage <- read.image(matched_plots()[1])
     v$imgclick.x <- NULL
     v$imgclick.y <- NULL
@@ -350,7 +358,7 @@ function(input, output, session) {
   
   #Right plot
   output$plot2 <- renderPlot({
-    print(matched_plots())
+    print(paste0("Figure filenames:",matched_plots()))
     v2$originalImage <- read.image(matched_plots()[2])
     v2$imgclick.x <- NULL
     v2$imgclick.y <- NULL
