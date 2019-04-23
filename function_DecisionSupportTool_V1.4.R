@@ -9,6 +9,16 @@ DecisionTool=function(
   WriteOutputCsv=TRUE,
   WriteMapSources=FALSE
 ) {
+  defaultMapNames <- c("map1dTrapDensity","map1dTrapDensityLog","map3dTrawlLength","map4dLineDensity",
+                       "map4dLineDensityLog","map6dLineDia","map8dMeanThreat", "map8dTotalThreat",
+                       "map8dTotalThreatLog","map9WhaleHabitat", "map9WhaleHabitatLog",
+                       "map9dRiskScore", "map9dRiskScoreLog"  )
+  scenarioMapNames <- c(    "map1sTrapDensity", "map1sTrapDensityLog","map2sTrapDensity", 
+                            "map2sTrapDensityLog","map3sTrawlLength",
+                            "map4sLineDensity", "map4sLineDensityLog","map6sLineDia",
+                            "map8sMeanThreat","map8sTotalThreat", "map8sTotalThreatLog",
+                            "map9WhaleHabitat", "map9WhaleHabitatLog","map9sRiskScore",
+                            "map9sRiskScoreLog")
   
   # HD="/net/work4/LobsterGroup/Management/RightWhales/DecisionSupportTool"
   # InputSpreadsheetName="GearScenarioTests.csv"
@@ -2050,6 +2060,11 @@ DecisionTool=function(
     plot(map9dRiskScore);
     plot(map9dRiskScoreLog);
     
+    for (iplot in 1:length(defaultMapNames)){
+      png(here::here(paste0("Scenarios/",OutputDir,"/",defaultMapNames[iplot],".png")),width=1000,height=1000,units="px")
+      eval(parse(text=paste0("plot(",defaultMapNames[iplot],")")))
+      dev.off()
+    }
     dev.off()
     
     ## save maps
@@ -2106,6 +2121,11 @@ DecisionTool=function(
     plot(map9sRiskScoreLog);
     
     dev.off()
+    for (iplot in 1:length(scenarioMapNames)){
+      png(here::here(paste0("Scenarios/",OutputDir,"/",scenarioMapNames[iplot],".png")),width=1000,height=1000,units="px")
+      eval(parse(text=paste0("plot(",scenarioMapNames[iplot],")")))
+      dev.off()
+    }
     
     ## save maps
     save(
