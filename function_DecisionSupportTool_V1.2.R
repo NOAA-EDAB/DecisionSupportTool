@@ -265,7 +265,7 @@ DecisionTool=function(
       for(i in 1:nrow(Closures)){
         message(paste("Overlaying Closure", i))
         ClosureShape=Closures$Shapefile[i]; ClosureShape ## name of shapefile
-        ShapeI=readOGR(dsn=paste(HD, "/TempShapefiles", sep=""), layer=ClosureShape, verbose=FALSE) ## load shapefile
+        ShapeI=readOGR(dsn=paste(HD, "/InputShapefiles", sep=""), layer=ClosureShape, verbose=FALSE) ## load shapefile
         ShapeI$ID=1 ## create a known field 
         ShapeI=spTransform(ShapeI, proj4string(MapRef))
         ClosedPx=MapRef$IecIndex_1[!is.na(over(MapRef, ShapeI)$ID)] ## get spatial overlap of shapefile from overlay
@@ -390,7 +390,7 @@ DecisionTool=function(
         }
         if(!is.na(TrapReductions$Shapefile[i])) {
           TrapReductionsShape=TrapReductions$Shapefile[i]; TrapReductionsShape ## name of shapefile
-          ShapeI=readOGR(dsn=paste(HD, "/TempShapefiles", sep=""), layer=TrapReductionsShape, verbose=FALSE) ## load shapefile
+          ShapeI=readOGR(dsn=paste(HD, "/InputShapefilesfiles", sep=""), layer=TrapReductionsShape, verbose=FALSE) ## load shapefile
           ShapeI$ID=1 ## create a known field 
           ShapeI=spTransform(ShapeI, proj4string(MapRef))
           ReductionPx=MapRef$IecIndex_1[!is.na(over(MapRef, ShapeI)$ID)] ## get spatial overlap of shapefile from overlay
