@@ -49,6 +49,7 @@ DecisionTool=function(
   ##
   if(Fold) { ## load GIS layers and bathymetry
     ShapefileDir=paste(HD, "/InputShapefiles", sep="")
+    print(ShapefileDir)
     message("Loading Shapefiles")
     spStatAreas=readOGR(dsn=ShapefileDir, 
                         layer="StatAreas_DecisionTool",
@@ -187,7 +188,7 @@ DecisionTool=function(
           "InputSpreadsheets", ## subdirectory
           InputSpreadsheetName, ## file name
           sep="/"), stringsAsFactors=FALSE, na.strings=""); ScenarioInputs
-  
+  print(ScenarioInputs)
 
   # ScenarioInputs$LMA[ScenarioInputs$LMA==""]=NA
   # ScenarioInputs$State[ScenarioInputs$State==""]=NA
@@ -373,7 +374,7 @@ DecisionTool=function(
     Stage2d=Stage1d
     Stage2s=Stage1s
     
-    if(nrow(TrapReductions>0)){
+    if(nrow(TrapReductions)>0){
       for(i in 1:nrow(TrapReductions)){
         ## 
         MapRef_I=MapRef;
@@ -497,6 +498,8 @@ DecisionTool=function(
     
     #########################--
     Stage2dOutput=aggregate(TrapsFished~Month, Stage2d, sum); Stage2dOutput
+    print(Stage2dOutput)
+    print("HERE")
     Stage2dTotal=aggregate(TrapsFished~1, Stage2dOutput, sum); Stage2dTotal
     Stage2dTotal$Month="Total"
     Stage2dOutput=rbind(Stage2dOutput, Stage2dTotal); Stage2dOutput

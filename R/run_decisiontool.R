@@ -27,5 +27,4 @@ run_decisiontool <- function(HD=here::here(),InputSpreadsheetName="ExampleRun4.c
     WriteOutputCsv=TRUE ## write results in PrintTables as csv file for further analysis
   )
   
-  
 }
