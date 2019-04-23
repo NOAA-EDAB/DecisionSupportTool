@@ -95,6 +95,14 @@ function(input, output, session) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile8c")
     }
   })  
+  observeEvent(input$shapefile8d, {
+    if(input$shapefile8d == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile8d")  %>%
+        addPolygons(group = "shapefile8d" ,data =raster::subset(LCMAs,Name=="A2_3overlap")  ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile8d")
+    }
+  })  
   observeEvent(input$shapefile9, {
     if(input$shapefile9 == T) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile9")  %>%
@@ -358,6 +366,14 @@ function(input, output, session) {
     }
   }
   
+  validate_header <- function() {
+    if (input$filename == "" & input$existing_scenarios == ""){
+      "No results found."
+    } else {
+      NULL
+    }
+  }
+  
   #Implement the validation function and make the filenames reactive  
   matched_plots <- reactive({
      # Make sure requirements are met before looking for results
@@ -368,6 +384,30 @@ function(input, output, session) {
   })
   
   #Plots files found using the functions above-----------------------------------------------------------
+  
+  output$plot_scenario_name <- renderText({
+    if (input$filename == "") {
+      validate(
+        validate_header()
+      ) 
+      scenario <- paste0("Results from ",input$existing_scenarios)
+    } else {
+      scenario <- paste0("Results from ",input$filename)
+    }
+      scenario
+  })
+  
+  output$table_scenario_name <- renderText({
+    if (input$filename == "") {
+      validate(
+        validate_header()
+      ) 
+      scenario <- paste0("Results from ",input$existing_scenarios)
+    } else {
+      scenario <- paste0("Results from ",input$filename)
+    }
+    scenario
+  })
   
   #Left plot
   output$plot1 <- renderPlot({

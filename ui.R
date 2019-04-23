@@ -18,7 +18,7 @@ library(dplyr)
 #Source helper functions
 r.dir <- here::here("R")
 
-# source(file.path(r.dir,"read_shapefiles.R"))
+source(file.path(r.dir,"read_shapefiles.R"))
 source(file.path(r.dir,"model-specs.R"))
 source("function_DecisionSupportTool_V1.2.R")
 source(file.path(r.dir,"run_decisiontool.R"))
@@ -97,6 +97,7 @@ ui <- dashboardPage(
           )
         ),
         fluidRow(
+          textOutput("plot_scenario_name"),
             box(
               h4("Default model output:"),
               plotOutput("plot1",click="plot1_click",
@@ -123,6 +124,7 @@ ui <- dashboardPage(
         ),
       
       tabItem(tabName = "view_tables",
+              textOutput("table_scenario_name"),
               fluidRow(
                 box(width = 5,
                     h4("Relative Risk"),
@@ -156,6 +158,7 @@ ui <- dashboardPage(
           checkboxInput(inputId='shapefile8a',label="A1",value = F),
           checkboxInput(inputId='shapefile8b',label="A2",value = F),
           checkboxInput(inputId='shapefile8c',label="A3",value = F),
+          checkboxInput(inputId='shapefile8d',label="A2_3_overlap",value = F),
           checkboxInput(inputId='shapefile1',label="SouthShoreA",value = F),
           checkboxInput(inputId='shapefile2',label="SouthShoreB",value = F),
           checkboxInput(inputId='shapefile5',label="SouthShoreC",value = F),
@@ -178,5 +181,6 @@ ui <- dashboardPage(
               
       )
     )
+   )
   )
 )
