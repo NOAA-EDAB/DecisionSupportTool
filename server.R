@@ -432,14 +432,14 @@ function(input, output, session) {
   find_tables <- function(){
     
     if (input$filename == "") {
-      scenario_path <- sprintf("Scenarios/%s/%s_OutputData.csv",
-                               input$existing_scenarios,
-                               input$existing_scenarios)
+      scenario_path <- here::here(sprintf("Scenarios/%s/%s_OutputData.csv",
+                                          input$existing_scenarios,
+                                          input$existing_scenarios))
       # scenario_path <- paste0("Scenarios/",input$existing_scenarios,"/", input$existing_scenarios, "OutputData.csv")
     } else {
-      scenario_path <- sprintf("Scenarios/%s/%s_OutputData.csv",
-                               input$existing_filename,
-                               input$existing_filename)
+      scenario_path <- here::here(sprintf("Scenarios/%s/%s_OutputData.csv",
+                                          input$filename,
+                                          input$filename))
       # scenario_path <- paste0("Scenarios/",input$filename,"/")
     }
     
