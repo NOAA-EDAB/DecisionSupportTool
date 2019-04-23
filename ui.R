@@ -150,7 +150,7 @@ ui <- dashboardPage(
           checkboxInput(inputId='shapefile14',label="OffshoreA",value = F)
           #checkboxInput(inputId='shapefile14',label="StatAreas",value = F)
         ) 
-      )
+       )
       )
     )
   )

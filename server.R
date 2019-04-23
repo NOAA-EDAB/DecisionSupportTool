@@ -246,28 +246,26 @@ function(input, output, session) {
     
     #Saves output and runs model
     print("Saving parameters to file.")
-    write.csv(param, 
-              file = paste0(here::here("InputSpreadsheets",input$filename),".csv"), na="",row.names = F)
-    
-    #Run decision tool function here. Will print messages associated w/ function in UI
-    withCallingHandlers({
-      shinyjs::html("run-text", "")
-      tryCatch({
-        print('About to run decision tool function.')
-        run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
+    write.csv(param, file = paste0(here::here("InputSpreadsheets",input$filename),".csv"), na="",row.names = F)
+      
+      #Run decision tool function here. Will print messages associated w/ function in UI
+      withCallingHandlers({
+        shinyjs::html("run-text", "")
+        tryCatch({
+          print('About to run decision tool function.')
+          run_decisiontool(HD=here::here(),InputSpreadsheetName=paste0(input$filename,".csv"))
+
+        },
+        error = function(e){
+          message("Error in decision tool function.")
+        })
 
       },
-      error = function(e){
-        message("Error in decision tool function.")
+      message = function(m) {
+        shinyjs::html(id = "run-text", html = paste0(m$message,"<br>"), add = TRUE)
       })
-      
-    },
-    message = function(m) {
-      shinyjs::html(id = "run-text", html = paste0(m$message,"<br>"), add = TRUE)
-    })
-    
   })
-  
+
   #View output tab-----------------------------------------------------------------------------------
   
   ### Function to read in png files
