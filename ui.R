@@ -8,18 +8,17 @@ library(maptools)
 library(grid)
 library(gtable)
 library(gridExtra)
-library(maptools)
 library(shinyjs)
 library(leaflet)
 library(imager)
 library(shinyEffects)
 library(stringr)
-
+library(dplyr)
 
 #Source helper functions
 r.dir <- here::here("R")
 
-# source(file.path(r.dir,"read_shapefiles.R"))
+source(file.path(r.dir,"read_shapefiles.R"))
 source(file.path(r.dir,"model-specs.R"))
 source("function_DecisionSupportTool_V1.2.R")
 source(file.path(r.dir,"run_decisiontool.R"))
@@ -34,9 +33,9 @@ ui <- dashboardPage(
   dashboardSidebar(    
     sidebarMenu(
     menuItem("Specify Model", tabName = "specify_model", icon = icon("dashboard")),
-    menuItem("View Output", tabName = "view_output", icon = icon("map-marker")),
     menuItem("View Tables", tabName = "view_tables", icon = icon("th")),
-    menuItem("Help", tabName = "help", icon = icon("question"))
+    menuItem("View Plots", tabName = "view_plots", icon = icon("map-marker")),
+    menuItem("Visualize Areas", tabName = "visualize_areas", icon = icon("question"))
     )
   ),
   dashboardBody(    
@@ -57,7 +56,7 @@ ui <- dashboardPage(
                               c("",existing_input_scenarios),
                               multiple = F),
                   actionButton("update_list",
-                               "Update file list")
+                  "Refresh")
                   )
                 ),
               fluidRow(
@@ -65,6 +64,8 @@ ui <- dashboardPage(
                   
                   rHandsontableOutput("hot", width = "100%"),
                   actionButton(inputId="run",label="Run model"),
+                  # actionButton('cancel', 'Cancel'),
+                  # actionButton('status', 'Check Status'),
                   helpText('Parameterize actions by entering information into the spreadsheet above.
                            Right click and select "Insert Row Above" to incorporate multiple actions into the
                            scenario.'),
@@ -76,7 +77,7 @@ ui <- dashboardPage(
                   textOutput("run-text")
                 )
               ),
-      tabItem(tabName = "view_output",
+      tabItem(tabName = "view_plots",
         fluidRow(
           box(
             selectInput("select_plots", label = "Select plots to view:", selected = "Total Threat",
@@ -119,7 +120,7 @@ ui <- dashboardPage(
             )
           )
         ),
-  
+      
       tabItem(tabName = "view_tables",
               fluidRow(
                 box(width = 5,
@@ -139,7 +140,8 @@ ui <- dashboardPage(
                 )
               )
       ),
-      tabItem(tabName = "help",
+      
+      tabItem(tabName = "visualize_areas",
               fluidPage(
               shinydashboard::box(width = NULL, solidHeader = TRUE, status = 'primary', leafletOutput('help_map',width="100%",height="80vh")),
               absolutePanel(top = 60, left = 320,
@@ -150,20 +152,23 @@ ui <- dashboardPage(
           #                                      selected = c("iso100f","EastCoast"),inline = T)                  
           # )
           h3("Display options"),
-          checkboxInput(inputId='shapefile1',label="100ft",value = F),
-          checkboxInput(inputId='shapefile2',label="EastCoast",value = F),
+          checkboxInput(inputId='shapefile8a',label="A1",value = F),
+          checkboxInput(inputId='shapefile8b',label="A2",value = F),
+          checkboxInput(inputId='shapefile8c',label="A3",value = F),
+          checkboxInput(inputId='shapefile1',label="SouthShoreA",value = F),
+          checkboxInput(inputId='shapefile2',label="SouthShoreB",value = F),
+          checkboxInput(inputId='shapefile5',label="SouthShoreC",value = F),
           checkboxInput(inputId='shapefile3',label="GB",value = F),
           checkboxInput(inputId='shapefile4',label="GOM",value = F),
-          checkboxInput(inputId='shapefile5',label="GSC_Gillnet",value = F),
-          checkboxInput(inputId='shapefile6',label="GSC_Trap",value = F),
-          checkboxInput(inputId='shapefile7',label="GSC_Sliver",value = F),
-          checkboxInput(inputId='shapefile8',label="LCMAs",value = F),
+          checkboxInput(inputId='shapefile6',label="CCBay",value = F),
+          checkboxInput(inputId='shapefile7',label="MassExpansion",value = F),
           checkboxInput(inputId='shapefile9',label="MASS_RA",value = F),
           checkboxInput(inputId='shapefile10',label="MASS_RANE",value = F),
           checkboxInput(inputId='shapefile11',label="NEA_NR",value = F),
           checkboxInput(inputId='shapefile12',label="NEA_WGOM",value = F),
-          checkboxInput(inputId='shapefile13',label="SA_DT",value = F),
-          checkboxInput(inputId='shapefile14',label="SA_537",value = F)
+          checkboxInput(inputId='shapefile13',label="StatAreas",value = F),
+          checkboxInput(inputId='shapefile14',label="OffshoreA",value = F)
+          #checkboxInput(inputId='shapefile14',label="StatAreas",value = F)
         ) 
       )
       )
