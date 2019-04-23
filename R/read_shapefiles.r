@@ -24,10 +24,14 @@ NEA_NR <-  rgdal::readOGR(dsn = shapefilePath, layer = 'NEA_Nantucket_Rectangle'
 NEA_WGOM <-  rgdal::readOGR(dsn = shapefilePath, layer = 'NEA_WGOM_Area',verbose = F)
 #SA_DT <-  rgdal::readOGR(dsn = shapefilePath, layer = 'StatAreas_DecisionTool',verbose = F)
 #SA_537 <-  rgdal::readOGR(dsn = shapefilePath, layer = 'Statistical_Area_537',verbose = F)
+#TinyWedge <-  rgdal::readOGR(dsn = shapefilePath, layer = 'TinyWedge_LMA1',verbose = F)
 StatAreas <-  rgdal::readOGR(dsn = shapefilePath, layer = 'Statistical_Areas',verbose = F)
 areas <- c("464" ,"465" ,"511" ,"511", "512", "512", "513" ,"514" ,"515", "521", "522", "525", "526",
            "537" ,"538" ,"538", "539", "561" ,"562", "616")
 StatAreas <- raster::subset(StatAreas,Id %in% areas)
+
+s512 <-  rgdal::readOGR(dsn = shapefilePath, layer = 's512',verbose = F)
+
 message("Done")
 
 
