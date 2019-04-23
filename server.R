@@ -95,6 +95,14 @@ function(input, output, session) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile8c")
     }
   })  
+  observeEvent(input$shapefile8d, {
+    if(input$shapefile8d == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile8d")  %>%
+        addPolygons(group = "shapefile8d" ,data =raster::subset(LCMAs,Name=="A2_3overlap")  ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile8d")
+    }
+  })  
   observeEvent(input$shapefile9, {
     if(input$shapefile9 == T) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile9")  %>%

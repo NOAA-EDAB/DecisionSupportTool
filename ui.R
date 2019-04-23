@@ -157,6 +157,7 @@ ui <- dashboardPage(
           checkboxInput(inputId='shapefile8a',label="A1",value = F),
           checkboxInput(inputId='shapefile8b',label="A2",value = F),
           checkboxInput(inputId='shapefile8c',label="A3",value = F),
+          checkboxInput(inputId='shapefile8d',label="A2_3_overlap",value = F),
           checkboxInput(inputId='shapefile1',label="SouthShoreA",value = F),
           checkboxInput(inputId='shapefile2',label="SouthShoreB",value = F),
           checkboxInput(inputId='shapefile5',label="SouthShoreC",value = F),
