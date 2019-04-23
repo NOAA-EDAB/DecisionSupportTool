@@ -23,7 +23,7 @@ source(file.path(r.dir,"read_shapefiles.R"))
 source(file.path(r.dir,"model-specs.R"))
 # source("function_DecisionSupportTool_V1.2.R")
 source(file.path(r.dir,"run_decisiontool.R"))
-
+load("TrapMap_V0.1.Rdata")
 
 ## set working directory
 HD=here::here()
