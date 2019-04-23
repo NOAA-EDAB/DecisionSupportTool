@@ -177,9 +177,6 @@ ui <- dashboardPage(
        )
       ),
       tabItem(tabName = "view_help",
-              htmlOutput("renderedReadme")
-              
-      )
+              htmlOutput("renderedReadme"))
     )
-   )
   )
