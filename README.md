@@ -14,6 +14,23 @@ The tool takes the following management measures and model how it would change r
 For users with [R](https://cran.r-project.org/) and the necessary packages installed on their computers, run the following code to initiate an [R shiny](https://shiny.rstudio.com/) interactive web application.
 
 ```
+library(shinydashboard)
+library(htmlwidgets)
+library(rhandsontable)
+library(rgdal)
+library(sp)
+library(maps)
+library(maptools)
+library(grid)
+library(gtable)
+library(gridExtra)
+library(shinyjs)
+library(leaflet)
+library(imager)
+library(shinyEffects)
+library(stringr)
+library(dplyr)
+
 shiny::runGitHub("DecisionSupportTool", username = "NOAA-EDAB", ref = "master")
 
 ```
