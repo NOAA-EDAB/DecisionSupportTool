@@ -529,6 +529,6 @@ function(input, output, session) {
   })
   
   output$renderedReadme <- renderUI({           
-    includeHTML(rmarkdown::render(input = "readme.md", "html_document"))
+    includeHTML(rmarkdown::render(input = "README.md", "html_document"))
   })
 }
