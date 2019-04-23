@@ -266,9 +266,6 @@ function(input, output, session) {
       shinyjs::html(id = "run-text", html = paste0(m$message,"<br>"), add = TRUE)
     })
     
-    
-
-    
   })
   
   #View output tab-----------------------------------------------------------------------------------
@@ -332,16 +329,16 @@ function(input, output, session) {
   find_result <- function(){
     
     if (input$filename == "") {
-      scenario_path <- paste0("Scenarios/",input$existing_scenarios,"/")
+      scenario_path <- paste0(here::here("Scenarios",input$existing_scenarios))
     } else {
-      scenario_path <- paste0("Scenarios/",input$filename,"/")
+      scenario_path <- paste0(here::here("Scenarios",input$filename))
     }
     
     print(paste0("Model output saved in ",scenario_path))
     
     matched_plots <- list.files(scenario_path) [str_which(list.files(scenario_path),
                                                           str_remove(input$select_plots, " "))]
-    
+    print(matched_plots)
     if (input$log_plots){
       matched_plots <- matched_plots[str_which(matched_plots, "Log")] 
     } else {

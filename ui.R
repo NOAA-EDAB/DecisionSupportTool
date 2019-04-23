@@ -16,7 +16,6 @@ library(shinyEffects)
 library(stringr)
 library(dplyr)
 
-
 #Source helper functions
 r.dir <- here::here("R")
 
@@ -65,6 +64,8 @@ ui <- dashboardPage(
                   
                   rHandsontableOutput("hot", width = "100%"),
                   actionButton(inputId="run",label="Run model"),
+                  # actionButton('cancel', 'Cancel'),
+                  # actionButton('status', 'Check Status'),
                   helpText('Parameterize actions by entering information into the spreadsheet above.
                            Right click and select "Insert Row Above" to incorporate multiple actions into the
                            scenario.'),
