@@ -34,7 +34,7 @@ source(paste(HD, "function_DecisionSupportTool_V1.4.R", sep="/"))
 ## call function
 DecisionTool(
   HomeDir=HD, ## home directory for subdirectories
-  InputSpreadsheetName="ScenarioTemplate1_4.csv", ## csv input file with specified criteria
+  InputSpreadsheetName="NEAq_TrapReduction50_WeakRopeEverywhere_TagOffshore.csv", ## csv input file with specified criteria
   HighResolution=FALSE, ## Option to run in HighResolution mode. Slows model drammatically, not fully tested
   PrintTables=TRUE, ## print pdf tables of results
   PrintDefaultMaps=TRUE, ## print maps of default states; turned off to speed model run

@@ -203,8 +203,8 @@ DecisionTool=function(
     DistanceDF=aggregate(Val~IecIndex_1, DistanceDF, min); dim(DistanceDF)
     MapRef=merge(MapRef, DistanceDF, all.x=TRUE); summary(MapRef)
     MapRef=merge(MapRef, Tmp); summary(MapRef)
-    plot(MapRef)
-    points(MapRef[is.na(MapRef$Distance), ], col="green")
+    # plot(MapRef)
+    # points(MapRef[is.na(MapRef$Distance), ], col="green")
     
     
     ## Zone Adjacency for spatial redistribution of traps ################--
@@ -416,8 +416,8 @@ DecisionTool=function(
           }
           
           sp=unique(TrapSetJ[ ,c("x", "y", "IecIndex_1")]); coordinates(sp)=c("x", "y");
-          plot(ShapeI)
-          points(sp)
+          # plot(ShapeI)
+          # points(sp)
           
           ## Adjacent areas where traps can be moved to
           AdjacentSetIndexJ=merge(TrapMonthSetsIndicesJ, ZoneAdjacency); AdjacentSetIndexJ

@@ -204,10 +204,10 @@ DecisionTool=function(
   
   Constraints_Fishery=ScenarioInputs[ScenarioInputs$Action=="Constraint_Fishery",
                                      c("Action", "Fishery")]; Constraints_Fishery
-  Closures=ScenarioInputs[
-    ScenarioInputs$Action=="Closure", c("Action", "Shapefile", "Months",
-                                        "Percentage", "TrapRedistributionArea", 
-                                        "TrapRedistributionMethod")]; Closures
+  
+  Closures=ScenarioInputs[ScenarioInputs$Action=="Closure",
+                          c("Action", "Shapefile", "Months","Percentage")]; Closures
+  
   TrapReductions=ScenarioInputs[
     ScenarioInputs$Action=="TrapReduction", 
     c("Action", "LMA", "State", "StatArea", "Shapefile", "Months","Percentage")]; TrapReductions
