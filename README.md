@@ -28,9 +28,9 @@ You can also click the drop-down to select a scenario that has already been anal
 ### Evaluate model output:
 Once the model finishes running, there are two ways to evaluate the output: spatial heatmaps and risk tables.
 
-![Figure 3. Risk tables for a scenario.](demo_figures/tool_demo-risk.png)
+![Figure 3. Risk tables for a scenario.](demo_figures/tool_demo-risk.PNG)
 
-![Figure 4. Heatmap of risk for a scenario. The images can be magnified by right-click dragging a polygon of interest followed by a right double-click. To zoom back out just right double-click again.](demo_figures/tool_demo-riskmap.png)
+![Figure 4. Heatmap of risk for a scenario. The images can be magnified by right-click dragging a polygon of interest followed by a right double-click. To zoom back out just right double-click again.](demo_figures/tool_demo-riskmap.PNG)
 
 
 
