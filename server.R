@@ -390,14 +390,14 @@ function(input, output, session) {
   find_tables <- function(){
     
     if (input$filename == "") {
-      scenario_path <- sprintf("Scenarios/%s/%s_OutputData.csv",
+      scenario_path <- here::here(sprintf("Scenarios/%s/%s_OutputData.csv",
                                input$existing_scenarios,
-                               input$existing_scenarios)
+                               input$existing_scenarios))
       # scenario_path <- paste0("Scenarios/",input$existing_scenarios,"/", input$existing_scenarios, "OutputData.csv")
     } else {
-      scenario_path <- sprintf("Scenarios/%s/%s_OutputData.csv",
-                               input$existing_filename,
-                               input$existing_filename)
+      scenario_path <- here::here(sprintf("Scenarios/%s/%s_OutputData.csv",
+                               input$filename,
+                               input$filename))
       # scenario_path <- paste0("Scenarios/",input$filename,"/")
     }
     
@@ -416,6 +416,7 @@ function(input, output, session) {
   
   output$RelativeRisk = DT::renderDT({  #Tables loaded from the proper Scenario folder
     # dat <- read.csv("Scenarios/ExampleRun/ExampleRun_OutputData.csv", stringsAsFactors = FALSE) %>% 
+    print(matched_tables())
     dat <- read.csv(matched_tables(), stringsAsFactors = FALSE) %>%
       dplyr::mutate(Default = round(Default, 0),
                     Scenario = round(Scenario, 0),
@@ -434,6 +435,7 @@ function(input, output, session) {
   
   output$VerticalLines = DT::renderDT({  #Tables loaded from the proper Scenario folder
     # dat <- read.csv("Scenarios/ExampleRun/ExampleRun_OutputData.csv", stringsAsFactors = FALSE) %>% 
+    print(matched_tables())
     dat <- read.csv(matched_tables(), stringsAsFactors = FALSE) %>%
       dplyr::mutate(Default = round(Default, 0),
                     Scenario = round(Scenario, 0),
@@ -452,6 +454,7 @@ function(input, output, session) {
   
   output$TrapsFished = DT::renderDT({  #Tables loaded from the proper Scenario folder
     # dat <- read.csv("Scenarios/ExampleRun/ExampleRun_OutputData.csv", stringsAsFactors = FALSE) %>% 
+    print(matched_tables())
     dat <- read.csv(matched_tables(), stringsAsFactors = FALSE) %>%
       dplyr::mutate(Default = round(Default, 0),
                     Scenario = round(Scenario, 0),
@@ -470,6 +473,7 @@ function(input, output, session) {
   
   output$Trawls = DT::renderDT({  #Tables loaded from the proper Scenario folder
     # dat <- read.csv("Scenarios/ExampleRun/ExampleRun_OutputData.csv", stringsAsFactors = FALSE) %>% 
+    print(matched_tables())
     dat <- read.csv(matched_tables(), stringsAsFactors = FALSE) %>%
       dplyr::mutate(Default = round(Default, 0),
                     Scenario = round(Scenario, 0),
