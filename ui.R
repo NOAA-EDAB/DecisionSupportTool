@@ -18,7 +18,7 @@ library(dplyr)
 #Source helper functions
 r.dir <- here::here("R")
 
-# source(file.path(r.dir,"read_shapefiles.R"))
+source(file.path(r.dir,"read_shapefiles.R"))
 source(file.path(r.dir,"model-specs.R"))
 source("function_DecisionSupportTool_V1.2.R")
 source(file.path(r.dir,"run_decisiontool.R"))
@@ -96,6 +96,7 @@ ui <- dashboardPage(
           )
         ),
         fluidRow(
+          textOutput("plot_scenario_name"),
             box(
               h4("Default model output:"),
               plotOutput("plot1",click="plot1_click",
@@ -122,6 +123,7 @@ ui <- dashboardPage(
         ),
       
       tabItem(tabName = "view_tables",
+              textOutput("table_scenario_name"),
               fluidRow(
                 box(width = 5,
                     h4("Relative Risk"),
@@ -169,9 +171,9 @@ ui <- dashboardPage(
           checkboxInput(inputId='shapefile13',label="StatAreas",value = F),
           checkboxInput(inputId='shapefile14',label="OffshoreA",value = F)
           #checkboxInput(inputId='shapefile14',label="StatAreas",value = F)
-        ) 
-       )
-      )
+      ) 
+     )
     )
+   )
   )
 )
