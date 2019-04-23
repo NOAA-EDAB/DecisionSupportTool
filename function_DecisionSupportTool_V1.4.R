@@ -2280,6 +2280,11 @@ DecisionTool=function(
               row.names = FALSE)
   }  
   
-  print("Model run completed")  
+  message("Writing rmd file")  
+  OutputPathDir <- here::here("Scenarios",OutputDir)
+  rmarkdown::render(input = here::here("template.Rmd"), output_format="html_document",output_file=paste0(OutputDir,".html"),output_dir=OutputPathDir,params = list(set_title = InputSpreadsheetName,
+                                                                                                                                                                   set_path = OutputDir))
+  
+  message("Model run completed")  
   
 } ## end function
