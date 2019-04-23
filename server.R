@@ -200,8 +200,13 @@ function(input, output, session) {
         hot_col(col = "Shapefile", strict = F, type = "autocomplete", source = shapefile_names) %>% 
         hot_col(col = "Months", type = "autocomplete", source = Months) %>%
         hot_col(col = "Percentage", type = "numeric", strict = F) %>% 
-        hot_col(col = "TrapRedistributionArea", type = "autocomplete", source = TrapRedistributionArea) %>% 
-        hot_col(col = "TrapRedistributionMethod", type = "autocomplete", source = TrapRedistributionMethod)
+        hot_col(col = "TrawlRegulation", type = "autocomplete", source = TrawlRegulation) %>% 
+        hot_col(col = "TrawlLen", type = "numeric", strict = F) %>% ## See DecisionSupportTool_V1.4.R for caveat
+        hot_col(col = "MaxRopeDia", type = "autocomplete", source = MaxRopeDia) %>% 
+        hot_col(col = "BuoylineDevice", type = "autocomplete", source = BuoylineDevice) %>% 
+        hot_col(col = "RopelessDevice", type = "autocomplete", source = RopelessDevice) %>% 
+        hot_col(col = "TrapCap", type = "autocomplete", source = TrapCap)
+
       
       #Show filled template if input file is chosen
     } else {
@@ -209,7 +214,7 @@ function(input, output, session) {
    
       #For running models back to back in same session. 
       DF <- read.csv(paste0(here::here("InputSpreadsheets",input$existing_scenarios),".csv"))
-      
+
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
         hot_cols(colWidths = c(100,50)) %>% 
         hot_col(col = "Action", type = "autocomplete", source = Action) %>% 
@@ -220,9 +225,12 @@ function(input, output, session) {
         hot_col(col = "Shapefile", strict = F, type = "autocomplete", source = shapefile_names) %>% 
         hot_col(col = "Months", type = "autocomplete", source = Months) %>%
         hot_col(col = "Percentage", type = "numeric", strict = F) %>% 
-        hot_col(col = "TrapRedistributionArea", type = "autocomplete", source = TrapRedistributionArea) %>% 
-        hot_col(col = "TrapRedistributionMethod", type = "autocomplete", source = TrapRedistributionMethod)
-
+        hot_col(col = "TrawlRegulation", type = "autocomplete", source = TrawlRegulation) %>% 
+        hot_col(col = "TrawlLen", type = "numeric", strict = F) %>% ## See DecisionSupportTool_V1.4.R for caveat
+        hot_col(col = "MaxRopeDia", type = "autocomplete", source = MaxRopeDia) %>% 
+        hot_col(col = "BuoylineDevice", type = "autocomplete", source = BuoylineDevice) %>% 
+        hot_col(col = "RopelessDevice", type = "autocomplete", source = RopelessDevice) %>% 
+        hot_col(col = "TrapCap", type = "autocomplete", source = TrapCap)
     }
   })
   
