@@ -44,7 +44,7 @@ DecisionTool=function(
   library(rgdal)
   
   # HD=("/net/work4/LobsterGroup/Management/RightWhales/DecisionSupportTool");
-  HD=HomeDir; setwd(HD)
+  # HD=HomeDir; setwd(HD)
   OutputDir=gsub(".csv", "", InputSpreadsheetName); OutputDir
   
   spRef_UTM_19="+proj=utm +zone=19 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"

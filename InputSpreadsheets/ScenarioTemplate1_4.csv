@@ -1,4 +1,4 @@
-Action,LMA,State,StatArea,Fishery,Shapefile,Months,Percentage,TrawlRegulation,TrawlLen,MaxRopeDia,BuoylineDevice,Ropeless,TrapCap,,,,,,,,,,,,
+Action,LMA,State,StatArea,Fishery,Shapefile,Months,Percentage,TrawlRegulation,TrawlLen,MaxRopeDia,BuoylineDevice,RopelessDevice,TrapCap,,,,,,,,,,,,
 Constraint_Spatial,A3,,,,,,,,,,,,,,,,,,,,,,,,
 Constraint_Fishery,,,,Offshore_Lobster,,,,,,,,,,,,,,,,,,,,,
 MaxRopeDia,,,515,,,,,,,"1,700",,,,,,,,,,,,,,,
