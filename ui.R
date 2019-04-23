@@ -34,7 +34,8 @@ ui <- dashboardPage(
   dashboardSidebar(    
     sidebarMenu(
     menuItem("Specify Model", tabName = "specify_model", icon = icon("dashboard")),
-    menuItem("View Output", tabName = "view_output", icon = icon("th")),
+    menuItem("View Output", tabName = "view_output", icon = icon("map-marker")),
+    menuItem("View Tables", tabName = "view_tables", icon = icon("th")),
     menuItem("Help", tabName = "help", icon = icon("question"))
     )
   ),
@@ -118,6 +119,26 @@ ui <- dashboardPage(
             )
           )
         ),
+  
+      tabItem(tabName = "view_tables",
+              fluidRow(
+                box(width = 5,
+                    h4("Relative Risk"),
+                    DT::dataTableOutput('RelativeRisk')),
+                box(width = 5,
+                    h4("Vertical Lines"),
+                    DT::dataTableOutput('VerticalLines'))
+              ),
+              fluidRow(
+                box(width = 5,
+                    h4("Traps Fished"),
+                    DT::dataTableOutput('TrapsFished')),
+                box(width = 5,
+                    h4("Trawls"),
+                    DT::dataTableOutput('Trawls')
+                )
+              )
+      ),
       tabItem(tabName = "help",
               fluidPage(
               shinydashboard::box(width = NULL, solidHeader = TRUE, status = 'primary', leafletOutput('help_map',width="100%",height="80vh")),
