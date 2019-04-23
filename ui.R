@@ -180,3 +180,4 @@ ui <- dashboardPage(
               htmlOutput("renderedReadme"))
     )
   )
+)
