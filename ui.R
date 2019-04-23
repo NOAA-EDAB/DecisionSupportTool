@@ -35,7 +35,8 @@ ui <- dashboardPage(
     menuItem("Specify Model", tabName = "specify_model", icon = icon("dashboard")),
     menuItem("View Tables", tabName = "view_tables", icon = icon("th")),
     menuItem("View Plots", tabName = "view_plots", icon = icon("map-marker")),
-    menuItem("Visualize Areas", tabName = "visualize_areas", icon = icon("question"))
+    menuItem("Visualize Areas", tabName = "visualize_areas", icon = icon("binoculars")),
+    menuItem("Additional Info", tabName = "view_help", icon = icon("question"))
     )
   ),
   dashboardBody(    
@@ -172,8 +173,13 @@ ui <- dashboardPage(
           checkboxInput(inputId='shapefile13',label="StatAreas",value = F),
           checkboxInput(inputId='shapefile14',label="OffshoreA",value = F)
           #checkboxInput(inputId='shapefile14',label="StatAreas",value = F)
-      ) 
-     )
+        ) 
+       )
+      ),
+      tabItem(tabName = "view_help",
+              htmlOutput("renderedReadme")
+              
+      )
     )
    )
   )
