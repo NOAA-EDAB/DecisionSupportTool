@@ -1,8 +1,7 @@
 # DecisionSupportTool
-ALW TRT Decision Support Tool
+Atlantic Large Whale Take Reduction Team Decision Support Tool
 
 ## What is this tool used for?
-
 The tool takes the following management measures and model how it would change risk to whales:
 
 1.	Seasonal Closures, either with gear removed from the water or allowed to redistribute.
@@ -11,22 +10,35 @@ The tool takes the following management measures and model how it would change r
 4.	Regulations in vertical line characteristics
 5.	Implementation of ropeless or timed release technology.
 
-## How to do it?
-
+## How to use the tool:
 For users with [R](https://cran.r-project.org/) and the necessary packages installed on their computers, run the following code to initiate an [R shiny](https://shiny.rstudio.com/) interactive web application.
 
 ```
 shiny::runGitHub("DecisionSupportTool", username = "NOAA-EDAB", ref = "master")
 
 ```
-Once you have the app up and running, scenarios can be added one of two ways. < add screenshots > 
 
-Fill out the ScenarioTemplate tab with the criteria for a model run and save it as a csv file in the InputSpreadsheets directory								
-								
-Each line in the sheet is an independent record, interpreted by the model function								
-This file gets read and interpreted in the function at section 0.2								
-								
-## 1. Actions
+### Create scenarios and run the model:
+Once you have the app up and running, scenarios can be created by 1) adding a unique and descriptive scenario name, 2) defining actions (see "Defining Scenarios" section below), and 3) running the model. ![Figure 1. Steps to run a new scenario.](demo_figures/tool_demo-newscenario.png)
+
+You can also click the drop-down to select a scenario that has already been analyzed. If you just want to modify an existing scenario, select the scenario you want to update, give it a new name, and click the "run model" button. If you aren't certain of the spatial extent of the different areas (e.g., LMA, StatArea, State waters, etc), please click the "Visualize Areas" tab to explore the different spatial domains used in the model.
+![Figure 2. Spatial extent viewing tool showing the labeled "StatArea" available to the model.](demo_figures/tool_demo-shpviewer.PNG)
+
+
+### Evaluate model output:
+Once the model finishes running, there are two ways to evaluate the output: spatial heatmaps and risk tables.
+
+![Figure 3. Risk tables for a scenario.](demo_figures/tool_demo-risk.png)
+
+![Figure 4. Heatmap of risk for a scenario. The images can be magnified by right-click dragging a polygon of interest followed by a right double-click. To zoom back out just right double-click again.](demo_figures/tool_demo-riskmap.png)
+
+
+
+
+# Defining Scenarios								
+Each "action" (or row in the spreadsheet" is an independent record that is interpreted by the model function. *Note: actions are added to the model sequentially (e.g., row 1 is followed by row 2, etc) and the order of the rows may influence the outcome of the model.*
+
+## Actions
 
 In the Action column, select an option from the drop-down list								
 Currently implemented: 
@@ -35,7 +47,7 @@ Currently implemented:
 *	Constraint_Spatial
 *	TrapReduction
 							
-## 2. Action input types
+## Action input types
 
 Fill out the rest of the record with the desired inputs. Note that not all columns are applicable all actions.
 
@@ -46,9 +58,9 @@ Fill out the rest of the record with the desired inputs. Note that not all colum
 *	Shapefile - Constrain action to specified input shapefile. Should match name of shapefile in /TempShapefiles	*	Months - Text string of months to apply the action over.						
 *	Percentage - Input percentages for action (i.e. trap reductions, etc.)						
 
-## 3. Example inputs and interpretation.
+## Example inputs and interpretation.
 
-### 3.1 Spatial constraints.
+### Spatial constraints.
 
 This specifies the spatial domain of the model run. Think of specifications within a line as "ands" and subsequent lines as "ors" so the following would be interpreted as "Constrain the model to (LMA1 and Maine and StatAreas 511 and 512 and the bounds of the 'Example_511_512_Border' shapefile) or (LMA3)". You can have as many records for spatial constraints as desired. The model will use the union of constraints as the domain for the model run.
 
@@ -57,7 +69,7 @@ This specifies the spatial domain of the model run. Think of specifications with
 | Constraint_Spatial | A1  | ME    | 511, 512 |         | Example_511_512_Border |
 | Constraint_Spatial | A3  |       |          |         |                        |
 
-### 3.2 Fishery constraints. 
+### Fishery constraints. 
 
 This specifies the spatial fleet of the model run. The following interpreted as "constrain the model run to include the NonExempt fishery". You can only specify one fishery constraint							
 								
@@ -65,7 +77,7 @@ This specifies the spatial fleet of the model run. The following interpreted as 
 |--------------------|-----------|
 | Constraint_Fishery | NonExempt |
 
-### 3.3 Closures. 
+### Closures. 
 
 This removes all fishing from a region, either seasonally or for the entire year. The following would be interpreted as close the area within 'TinyWedge_LMA1' for May - August. Like spatial constraints, the extent of closures can use the LMA, State, and StatArea columns as well with each field interpreted as an "and"
 
@@ -73,7 +85,7 @@ This removes all fishing from a region, either seasonally or for the entire year
 |---------|-----|-------|----------|----------------|---------|
 | Closure |     |       |          | TinyWedge_LMA1 | 5,6,7,8 |
 								
-### 3.4 Trap Reductions.
+### Trap Reductions.
 
 This removes a percentage of traps from a spatial domain. *This cannot be specified seasonally.* The following would implement a 60% trap reduction in LMA3 and StatArea 515.
 								
@@ -82,18 +94,18 @@ This removes a percentage of traps from a spatial domain. *This cannot be specif
 | TrapReduction | A3  |       | 515      |           | 0.6        |
 
 
-### All options.
+### Overview of all options.
 
 All settings that are currently available can be seen below.
 
 | Action             | LMAs        | States | Fishery          | StatArea | TrawlRegulation | MaxRopeDia | BuoylineDevice     | RopelessDevice  |
 |--------------------|-------------|--------|------------------|----------|-----------------|------------|--------------------|-----------------|
 | Closure            | All         | All    | All              | 464      | Min             | 1,700      | 1,700@100m         | TimedRelease    |
-| Constraint_Fishery | A1          | ME     | NonExempt        | 465      | Max             | 3/8        | SSS_Regular        | AcousticRelease |
-| Constraint_Spatial | A2          | NH     | Exempt           | 511      | Exactly         | 7/16       | SSS_To500m         |                 |
-| MaxRopeDia         | A2_3overlap | MA     | Midshelf_Lobster | 512      |                 | 1/2        | TimedTensionCutter |                 |
-| TrawlLength        | A3          |        | Midshelf_Crab    | 513      |                 | 9/16       |                    |                 |
-| TrapCap            |             |        | Offshore_Lobster | 514      |                 | 5/8        |                    |                 |
+| Constraint_Fishery | A1          | ME     | NonExempt        | 465      | Max             | 3/8in      | SSS_Regular        | AcousticRelease |
+| Constraint_Spatial | A2          | NH     | Exempt           | 511      | Exactly         | 7/16in     | SSS_To500m         |                 |
+| MaxRopeDia         | A2_3overlap | MA     | Midshelf_Lobster | 512      |                 | 1/2in      | TimedTensionCutter |                 |
+| TrawlLength        | A3          |        | Midshelf_Crab    | 513      |                 | 9/16in     |                    |                 |
+| TrapCap            |             |        | Offshore_Lobster | 514      |                 | 5/8in      |                    |                 |
 | TrapReduction      |             |        | Offshore_Crab    | 515      |                 |            |                    |                 |
 | BuoylineDevice     |             |        |                  | 521      |                 |            |                    |                 |
 | RopelessDevice     |             |        |                  | 522      |                 |            |                    |                 |
@@ -102,8 +114,8 @@ All settings that are currently available can be seen below.
 |                    |             |        |                  | 537      |                 |            |                    |                 |
 |                    |             |        |                  | 538      |                 |            |                    |                 |
 |                    |             |        |                  | 539      |                 |            |                    |                 |
-
 Additional management actions coming soon!
+
 
 ## More background information on the tool:
 
