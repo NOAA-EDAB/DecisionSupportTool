@@ -161,6 +161,14 @@ function(input, output, session) {
       leafletProxy("help_map") %>% clearGroup(group = "shapefile14")
     }
   })
+  observeEvent(input$shapefile15, {
+    if(input$shapefile15 == T) {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile15")  %>%
+        addPolygons(group = "shapefile15" ,data = TinyWedge ,stroke = TRUE, color = '#5a5a5a', opacity = 1.0, weight = 0.5, fillColor = "#dcdcdc", fillOpacity = 0.3)
+    } else {
+      leafletProxy("help_map") %>% clearGroup(group = "shapefile15")
+    }
+  })
   
   
   observeEvent(input$update_list,{
