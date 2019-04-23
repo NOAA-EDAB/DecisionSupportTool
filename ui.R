@@ -8,7 +8,6 @@ library(maptools)
 library(grid)
 library(gtable)
 library(gridExtra)
-library(maptools)
 library(shinyjs)
 library(leaflet)
 library(imager)
@@ -34,7 +33,8 @@ ui <- dashboardPage(
   dashboardSidebar(    
     sidebarMenu(
     menuItem("Specify Model", tabName = "specify_model", icon = icon("dashboard")),
-    menuItem("View Plots", tabName = "view_plots", icon = icon("th")),
+    menuItem("View Tables", tabName = "view_tables", icon = icon("th")),
+    menuItem("View Plots", tabName = "view_plots", icon = icon("map-marker")),
     menuItem("Visualize Areas", tabName = "visualize_areas", icon = icon("question"))
     )
   ),
@@ -120,7 +120,27 @@ ui <- dashboardPage(
             )
           )
         ),
-
+      
+      tabItem(tabName = "view_tables",
+              fluidRow(
+                box(width = 5,
+                    h4("Relative Risk"),
+                    DT::dataTableOutput('RelativeRisk')),
+                box(width = 5,
+                    h4("Vertical Lines"),
+                    DT::dataTableOutput('VerticalLines'))
+              ),
+              fluidRow(
+                box(width = 5,
+                    h4("Traps Fished"),
+                    DT::dataTableOutput('TrapsFished')),
+                box(width = 5,
+                    h4("Trawls"),
+                    DT::dataTableOutput('Trawls')
+                )
+              )
+      ),
+      
       tabItem(tabName = "visualize_areas",
               fluidPage(
               shinydashboard::box(width = NULL, solidHeader = TRUE, status = 'primary', leafletOutput('help_map',width="100%",height="80vh")),
