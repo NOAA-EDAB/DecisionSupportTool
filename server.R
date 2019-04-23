@@ -387,4 +387,102 @@ function(input, output, session) {
     
   }, width = 675, height = 750)
   
+  find_tables <- function(){
+    
+    if (input$filename == "") {
+      scenario_path <- sprintf("Scenarios/%s/%s_OutputData.csv",
+                               input$existing_scenarios,
+                               input$existing_scenarios)
+      # scenario_path <- paste0("Scenarios/",input$existing_scenarios,"/", input$existing_scenarios, "OutputData.csv")
+    } else {
+      scenario_path <- sprintf("Scenarios/%s/%s_OutputData.csv",
+                               input$existing_filename,
+                               input$existing_filename)
+      # scenario_path <- paste0("Scenarios/",input$filename,"/")
+    }
+    
+    print(paste0("Results in ",scenario_path))
+    return(scenario_path)
+  }
+  
+  #Implement the validation function and make the filenames reactive  
+  matched_tables <- reactive({
+    # Make sure requirements are met before looking for results
+    validate(
+      validate_function()
+    ) 
+    find_tables()
+  })
+  
+  output$RelativeRisk = DT::renderDT({  #Tables loaded from the proper Scenario folder
+    # dat <- read.csv("Scenarios/ExampleRun/ExampleRun_OutputData.csv", stringsAsFactors = FALSE) %>% 
+    dat <- read.csv(matched_tables(), stringsAsFactors = FALSE) %>%
+      dplyr::mutate(Default = round(Default, 0),
+                    Scenario = round(Scenario, 0),
+                    Reduction = paste0(round(Reduction, 2) * 100, "%")) %>% 
+      dplyr::filter(Variable == "RelativeRisk") %>% 
+      dplyr::select(-Variable) %>% 
+      DT::datatable(., rownames = FALSE,
+                    options = list(pageLength = 13, 
+                                   dom = 't',
+                                   autoWidth = TRUE,
+                                   columnDefs = list(list(
+                                     className = 'dt-right', targets = c(0,3)
+                                   ))
+                    ))
+  })
+  
+  output$VerticalLines = DT::renderDT({  #Tables loaded from the proper Scenario folder
+    # dat <- read.csv("Scenarios/ExampleRun/ExampleRun_OutputData.csv", stringsAsFactors = FALSE) %>% 
+    dat <- read.csv(matched_tables(), stringsAsFactors = FALSE) %>%
+      dplyr::mutate(Default = round(Default, 0),
+                    Scenario = round(Scenario, 0),
+                    Reduction = paste0(round(Reduction, 2) * 100, "%")) %>% 
+      dplyr::filter(Variable == "VerticalLines") %>% 
+      dplyr::select(-Variable) %>% 
+      DT::datatable(., rownames = FALSE,
+                    options = list(pageLength = 13, 
+                                   dom = 't',
+                                   autoWidth = TRUE,
+                                   columnDefs = list(list(
+                                     className = 'dt-right', targets = c(0,3)
+                                   ))
+                    ))
+  })
+  
+  output$TrapsFished = DT::renderDT({  #Tables loaded from the proper Scenario folder
+    # dat <- read.csv("Scenarios/ExampleRun/ExampleRun_OutputData.csv", stringsAsFactors = FALSE) %>% 
+    dat <- read.csv(matched_tables(), stringsAsFactors = FALSE) %>%
+      dplyr::mutate(Default = round(Default, 0),
+                    Scenario = round(Scenario, 0),
+                    Reduction = paste0(round(Reduction, 2) * 100, "%")) %>% 
+      dplyr::filter(Variable == "TrapsFished") %>% 
+      dplyr::select(-Variable) %>% 
+      DT::datatable(., rownames = FALSE,
+                    options = list(pageLength = 13, 
+                                   dom = 't',
+                                   autoWidth = TRUE,
+                                   columnDefs = list(list(
+                                     className = 'dt-right', targets = c(0,3)
+                                   ))
+                    ))
+  })
+  
+  output$Trawls = DT::renderDT({  #Tables loaded from the proper Scenario folder
+    # dat <- read.csv("Scenarios/ExampleRun/ExampleRun_OutputData.csv", stringsAsFactors = FALSE) %>% 
+    dat <- read.csv(matched_tables(), stringsAsFactors = FALSE) %>%
+      dplyr::mutate(Default = round(Default, 0),
+                    Scenario = round(Scenario, 0),
+                    Reduction = paste0(round(Reduction, 2) * 100, "%")) %>% 
+      dplyr::filter(Variable == "Trawls") %>% 
+      dplyr::select(-Variable) %>% 
+      DT::datatable(., rownames = FALSE,
+                    options = list(pageLength = 13, 
+                                   dom = 't',
+                                   autoWidth = TRUE,
+                                   columnDefs = list(list(
+                                     className = 'dt-right', targets = c(0,3)
+                                   ))
+                    ))
+  })
 }
