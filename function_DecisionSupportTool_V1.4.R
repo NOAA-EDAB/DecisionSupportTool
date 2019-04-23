@@ -9,6 +9,7 @@ DecisionTool=function(
   WriteOutputCsv=TRUE,
   WriteMapSources=FALSE
 ) {
+  HD <- HomeDir
   defaultMapNames <- c("map1dTrapDensity","map1dTrapDensityLog","map3dTrawlLength","map4dLineDensity",
                        "map4dLineDensityLog","map6dLineDia","map8dMeanThreat", "map8dTotalThreat",
                        "map8dTotalThreatLog","map9WhaleHabitat", "map9WhaleHabitatLog",
@@ -73,7 +74,7 @@ DecisionTool=function(
   if(Fold) {
     ## read in input spreadsheet
     ScenarioInputs=read.csv(
-      paste("InputSpreadsheets", ## subdirectory
+      paste(here::here(),"InputSpreadsheets", ## subdirectory
             InputSpreadsheetName, ## file name
             sep="/"), stringsAsFactors=FALSE, na.strings=""); 
     ScenarioInputs=ScenarioInputs[!is.na(ScenarioInputs$Action), ]
@@ -198,12 +199,13 @@ DecisionTool=function(
     # save(StandardPx, file="StandardPx.Rdata")
     load(paste(HD, "/Inputs/StandardPx.Rdata", sep=""))
     ### summary(StandardPx)
-    
+
     load(paste(HD, "/Inputs/MapRef.Rdata", sep=""))
     ###summary(MapRef)
-    
+
     ## Trap Map ##################################################--
     load(paste(HD, "/Inputs/TrapMap_V0.1.Rdata", sep="")); 
+   
     ### summary(TrapMap)
     ## head(TrapMap)
     DistanceDF=unique(TrapMap[ ,c("IecIndex_1", "Distance")]); dim(DistanceDF)
