@@ -1,10 +1,15 @@
 Action <- c("Closure",
             "Constraint_Fishery",
             "Constraint_Spatial",
-            "EndlineModification",
-            "MinTrawlLength",
+            "MaxRopeDia",
+            "TrawlLength",
+            # "EndlineModification",
+            # "MinTrawlLength",
             "TrapCap",
-            "TrapReduction")
+            "TrapReduction",
+            "BuoylineDevice",
+            "RopelessDevice")
+
 LMA <- c("All",
           "A1",
           "A2",
@@ -27,15 +32,26 @@ StatArea <- c(464, 465, 511,
               515, 521, 522,
               561, 562, 537,
               538, 539)
-TrapRedistributionArea <- c("WithinStatArea",
-                            "AdjacentStatAreas",
-                            "AcrossLMA",
-                            "None")
-TrapRedistributionMethod <- c("Even",
-                              "IDW")
+
+TrawlRegulation <- c("Min",
+                     "Max",
+                     "Exactly")
+
+MaxRopeDia <- c("1,700", "3/8in",
+                "7/16in","1/2in",
+                "9/16in","5/8in")
+
+BuoylineDevice <- c("1,700@100m", 
+                    "SSS_Regular",
+                    "SSS_To500m",
+                    "TimedTensionCutter")
+
+RopelessDevice <- c("TimedRelease",
+                    "AcousticRelease")
 Months <- 1:12
 Percentage <- ""
 Shapefile <- ""
+TrapCap <- ""
 #Data frame to hold 
 DF <- data.frame(Action = as.character(rep(NA,10)),
                  LMA = as.character(rep(NA, 10)),
@@ -45,8 +61,13 @@ DF <- data.frame(Action = as.character(rep(NA,10)),
                  Shapefile = as.character(rep(NA, 10)),
                  Months = as.character(rep(NA, 10)),
                  Percentage = as.character(rep(NA, 10)),
-                 TrapRedistributionArea = as.character(rep(NA, 10)),
-                 TrapRedistributionMethod = as.character(rep(NA, 10)))
+                 TrawlRegulation	= as.character(rep(NA, 10)),
+                 TrawlLen	= as.character(rep(NA, 10)),
+                 MaxRopeDia= as.character(rep(NA, 10)),
+                 BuoylineDevice= as.character(rep(NA, 10)),
+                 RopelessDevice = as.character(rep(NA, 10)),
+                 TrapCap = as.character(rep(NA, 10)),
+                 Comment = as.character(rep(NA, 10)))
 
 # #get existing scenarios for listing as scenaerio inputs
 existing_input_csvs <- list.files(here::here("InputSpreadsheets"))
