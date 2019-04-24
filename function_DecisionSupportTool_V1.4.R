@@ -9,6 +9,7 @@ DecisionTool=function(
   WriteOutputCsv=TRUE,
   WriteMapSources=FALSE
 ) {
+  HomeDir <- here::here()
   HD <- HomeDir
   defaultMapNames <- c("map1dTrapDensity","map1dTrapDensityLog","map3dTrawlLength","map4dLineDensity",
                        "map4dLineDensityLog","map6dLineDia","map8dMeanThreat", "map8dTotalThreat",
@@ -25,7 +26,7 @@ DecisionTool=function(
   # InputSpreadsheetName="GearScenarioTests.csv"
   # InputSpreadsheetName="NEAq_TrapReduction50_WeakRopeEverywhere_TagOffshore.csv"
   
-  print(paste("Running ", InputSpreadsheetName))
+  message(paste("Running ", InputSpreadsheetName))
   
   # HomeDir=HD; HighResolution=FALSE; PrintTables=TRUE; PrintDefaultMaps=TRUE
   # PrintScenarioMaps=TRUE; PrintRedistributionMaps=TRUE; 
@@ -81,7 +82,7 @@ DecisionTool=function(
     ScenarioInputs$StatArea=as.character(ScenarioInputs$StatArea)
     ScenarioInputs$Months=as.character(ScenarioInputs$Months)
     
-    ScenarioInputs
+    print(ScenarioInputs)
     
     # ScenarioInputs$LMA[ScenarioInputs$LMA==""]=NA
     # ScenarioInputs$State[ScenarioInputs$State==""]=NA
@@ -127,7 +128,7 @@ DecisionTool=function(
   
   if(Fold) { ## load GIS layers and bathymetry
     ShapefileDir=paste(HD, "/InputShapefiles", sep="")
-    print("Loading Shapefiles")
+    message("Loading Shapefiles")
     spStatAreas=readOGR(dsn=ShapefileDir, 
                         layer="StatAreas_DecisionTool",
                         verbose=FALSE)
@@ -176,7 +177,7 @@ DecisionTool=function(
   
   ## 0.1 Load data #############################################--
   if(Fold) { 
-    print("Loading Data")
+    message("Loading Data")
     ## 0.1 Start with traps per grid by month. 
     ## This is calculated from the Area 3 Vertical Line model as a function of the number of vertical lines and trawl lengths. 
     ## For Area 3, this need to be modeled separately for the crab and lobster fishery with two different classes of lobster vessels.
@@ -290,7 +291,7 @@ DecisionTool=function(
   ## 0.2 Constrain spatial extent based on user inputs
   if(Fold) { ## fold spatial constraint 
     if(nrow(Constraints_Spatial)>0){
-      
+      print(Constraints_Spatial)
       for(i in 1:nrow(Constraints_Spatial)){
         ## constrain spatially
         MapRef_CrI=MapRef;
@@ -320,7 +321,7 @@ DecisionTool=function(
       TrapMap=TrapMap[TrapMap$IecIndex_1 %in% unique(MapRef_Cr$IecIndex_1), ]
       WhalesAt1Nm=WhalesAt1Nm[WhalesAt1Nm$IecIndex_1 %in% unique(MapRef_Cr$IecIndex_1), ]
       # summary(WhalesAt1Nm)
-      if(nrow(TrapMap)==0){ print("Error: Spatial Constraints removed all data"); break()}
+      if(nrow(TrapMap)==0){ message("Error: Spatial Constraints removed all data"); break()}
     } ##
   } ## Spatial Constraints
   
@@ -335,7 +336,7 @@ DecisionTool=function(
   ##########################################################--
   ## 1.0 Closures
   if(Fold) {
-    print("1. Applying any closures");
+    message("1. Applying any closures");
     ## Traps are removed or redistributed based on the locations and timing of seasonal closures 
     ## (management option #1 above). 
     ## We would need to consider a rough approach to how to model redistributing traps. 
@@ -351,11 +352,11 @@ DecisionTool=function(
       
       ## Define set of traps that will NOT be moved #######################################################--
       for(i in 1:nrow(Closures)){
-        print(paste("Overlaying Closure", i))
+        message(paste("Overlaying Closure", i))
         
         ## define the area affected by the closure
         ClosureShape=Closures$Shapefile[i]; ClosureShape ## name of shapefile
-        print(ClosureShape)
+        message(ClosureShape)
         ShapeI=readOGR(dsn=paste(HD, "/TempShapefiles", sep=""), layer=ClosureShape, verbose=FALSE) ## load shapefile
         ShapeI$ID=1 ## create a known field 
         ShapeI=spTransform(ShapeI, proj4string(MapRef))
@@ -412,7 +413,7 @@ DecisionTool=function(
         
         ## for each combination of fishery, distance, and zone
         for(j in 1:nrow(TrapSetsIndices)){
-          print(paste("Relocating traps for Closure", ClosureShape, "Area", j, "of", nrow(TrapSetsIndices), sep=" "))
+          message(paste("Relocating traps for Closure", ClosureShape, "Area", j, "of", nrow(TrapSetsIndices), sep=" "))
           
           ## relevant traps to move
           TrapSetsIndexJ=TrapSetsIndices[j, ] ## start with fishery, distance, zone
@@ -424,7 +425,7 @@ DecisionTool=function(
           if(
             length(unique(TrapSetJ$Month))>1 & 
                            sd(table(unique(TrapSetJ[ ,c("Month", "IecIndex_1")])$Month))>0){
-            print("Error; Trap Redistribution Source Domain Inconsistent. Terminating Scenario Run"); break()
+            message("Error; Trap Redistribution Source Domain Inconsistent. Terminating Scenario Run"); break()
           }
           
           sp=unique(TrapSetJ[ ,c("x", "y", "IecIndex_1")]); coordinates(sp)=c("x", "y");
@@ -441,7 +442,7 @@ DecisionTool=function(
           if(
             length(unique(AdjacentSetJ$Month))>1 & 
             sd(table(unique(AdjacentSetJ[ ,c("Month", "IecIndex_1")])$Month))>0){
-            print("Error; Trap Redistribution Sink Domain Inconsistent. Terminating Scenario Run"); break()
+            message("Error; Trap Redistribution Sink Domain Inconsistent. Terminating Scenario Run"); break()
           }
           
           ############# Redistribute traps to adjacent areas
@@ -522,7 +523,7 @@ DecisionTool=function(
         sum(RemovedTraps$TrapsFished); EndTraps
       
       if(abs(StartTraps-EndTraps)/StartTraps>0.05) {
-        print("Error; Greater than 5% of traps unaccounted for in redistribution around closures; Ending Scenario Run")
+        message("Error; Greater than 5% of traps unaccounted for in redistribution around closures; Ending Scenario Run")
         break()
       }
       
@@ -574,7 +575,7 @@ DecisionTool=function(
         
         ##############################################################################--
         if(nrow(RemovedTraps)==0) {
-          print("No trap removals associated with closures; No trap removal maps produced")
+          message("No trap removals associated with closures; No trap removal maps produced")
         } else {
           TrapRemov_Agg=aggregate(TrapsFished~GridID+Month, RemovedTraps, sum); ###summary(TrapRemov_Agg)
           TrapRemov_Agg$TrapsFished=TrapRemov_Agg$TrapsFished+.01
@@ -710,7 +711,7 @@ DecisionTool=function(
   ##########################################################--
   ## 2.0 Trap Reductions
   if(Fold) {
-    print("2. Applying any trap reductions")
+    message("2. Applying any trap reductions")
     ## Traps are further removed due to trap reductions (management option #2). 
     ## Easiest assumption is that traps will be removed proportionally over the entire management area.
     Stage2d=Stage1d
@@ -742,7 +743,7 @@ DecisionTool=function(
         summary(MapRef_I)
         ## applicable months
         if(!is.na(TrapReductions$Months)){
-          print("Really, you're performing a seasonal trap reduction?")
+          message("Really, you're performing a seasonal trap reduction?")
           Months=as.numeric(strsplit(TrapReductions$Months[i], ",")[[1]])
         } else {Months=1:12}
         
@@ -863,7 +864,7 @@ DecisionTool=function(
   ###################################################################--
   ## 3.0 Convert traps to Trawls
   if(Fold) { 
-    print("3 Converting Traps to Trawls")
+    message("3 Converting Traps to Trawls")
     
     if(HighResolution){
       Stage3d=aggregate(TrapsFished~Region+VesselClass+Month+IecIndex_1+GridID, Stage2d, sum); 
@@ -891,7 +892,7 @@ DecisionTool=function(
       Stage3d$TrawlUnitCost[is.na(Stage3d$TrawlUnitCost) &
                               Stage3d$TrapsFished==0]=1
       if(length(which(is.na(Stage3d$TrawlProportion)))>0 | length(which(is.na(Stage3d$TrawlUnitCost)))>1){
-        print("Error: Some traps not matched to trawl configurations. Error in Stage3d");
+        message("Error: Some traps not matched to trawl configurations. Error in Stage3d");
         break()
       }
       
@@ -941,7 +942,7 @@ DecisionTool=function(
       ## implement trawl length regulations ###############################################################--
       if(nrow(SC_TrawlLength)>0){
         for(i in 1:nrow(SC_TrawlLength)){
-          print(paste("Reallocating trawl lengths for ", i, " of ", nrow(SC_TrawlLength), " scenarios", sep=""))
+          message(paste("Reallocating trawl lengths for ", i, " of ", nrow(SC_TrawlLength), " scenarios", sep=""))
           
           ## constrain spatially
           MapRef_CrI=MapRef;
@@ -1053,7 +1054,7 @@ DecisionTool=function(
       Stage3s$TrawlUnitCost[is.na(Stage3s$TrawlUnitCost) &
                               Stage3s$TrapsFished==0]=1
       if(length(which(is.na(Stage3s$TrawlProportion)))>0 | length(which(is.na(Stage3s$TrawlUnitCost)))>1){
-        print("Error: Some traps not matched to trawl configurations. Error in Stage3s");
+        message("Error: Some traps not matched to trawl configurations. Error in Stage3s");
         break()
       }
       
@@ -1116,7 +1117,7 @@ DecisionTool=function(
   ###################################################################--
   ## 4.0 Convert Trawls to vertical Lines
   if(Fold) { 
-    print("4 Calculating Vertical Lines from Trawls")
+    message("4 Calculating Vertical Lines from Trawls")
     ## Trawls are converted to vertical lines based on trawl length. 
     ## Expected to be two vertical lines per trawl for all offshore areas 
     ## but may be different for inshore areas with shorter trawls.
@@ -1134,7 +1135,7 @@ DecisionTool=function(
     Stage4d=merge(Stage4d, EndlinesPerTrawl, all.x=TRUE); ###summary(Stage4d) 
     
     if(length(which(is.na(Stage4d$EndlinesPerTrawl)))>0){ ## if there are any trawl lengths that don't match an endline
-      print("Error: Some trawls lengths not matched to an endline.  Error in Stage4d");
+      message("Error: Some trawls lengths not matched to an endline.  Error in Stage4d");
       break()
     }
     
@@ -1147,7 +1148,7 @@ DecisionTool=function(
     Stage4s=merge(Stage4s, EndlinesPerTrawl, all.x=TRUE); ###summary(Stage4s) 
     
     if(length(which(is.na(Stage4s$EndlinesPerTrawl)))>0){ ## if there are any trawl lengths that don't match an endline
-      print("Error: Some trawls lengths not matched to an endline.  Error in Stage4s");
+      message("Error: Some trawls lengths not matched to an endline.  Error in Stage4s");
       break()
     }
     
@@ -1156,7 +1157,7 @@ DecisionTool=function(
     ############################### Ropeless Scenarios################################################################--
     if(nrow(SC_RopelessDevice)>0){
       for(i in 1:nrow(SC_RopelessDevice)){
-        print(paste("Applying ropeless devices for ", i, " of ", nrow(SC_RopelessDevice), " scenarios", sep=""))
+        message(paste("Applying ropeless devices for ", i, " of ", nrow(SC_RopelessDevice), " scenarios", sep=""))
         
         ## constrain spatially
         MapRef_CrI=MapRef;
@@ -1341,14 +1342,14 @@ DecisionTool=function(
   ####################################################################--
   ## 6.0 Characterize Vertical Line Diameters
   if(Fold) {
-    print("6 Characterizing Vertical Line Diameters")
+    message("6 Characterizing Vertical Line Diameters")
     ## A distribution of line diameters for vertical lines is characterized 
     ## based on observed relationships with trawl length and further modified based on management options (#4 above).
     Stage6d=Stage5d; dim(Stage6d)
     Stage6d=merge(Stage6d, LineMod, all.x=TRUE); #summary(Stage6d)
     
     if(length(which(is.na(Stage6d$RopeDiam)))>0){ ## if there are any trawl lengths that don't match an endline
-      print("Error: Some trawls lengths not matched to line diameters.  Error in Stage6d");
+      message("Error: Some trawls lengths not matched to line diameters.  Error in Stage6d");
       break()
     }
     
@@ -1390,7 +1391,7 @@ DecisionTool=function(
     Stage6s=merge(Stage6s, LineMod, all.x=TRUE); #summary(Stage6s)
     
     if(length(which(is.na(Stage6s$RopeDiam)))>0){ ## if there are any trawl lengths that don't match an endline
-      print("Error: Some trawls lengths not matched to line diameters.  Error in Stage6s");
+      message("Error: Some trawls lengths not matched to line diameters.  Error in Stage6s");
       break()
     }
     
@@ -1433,7 +1434,7 @@ DecisionTool=function(
   ## 7.0 Modify line diameters according to management action
   ## this includes 
   if(Fold) { ## fold line diameter management 
-    print("7 Applying any management measures to line diameters")
+    message("7 Applying any management measures to line diameters")
     
     if(HighResolution){
       Stage7d=aggregate(NumVerticalLinesAtSize~IecIndex_1+GridID+Month+RopeDiam+TrapsPerTrawl, Stage6d, sum); 
@@ -1455,7 +1456,7 @@ DecisionTool=function(
       SC_MaxRopeDia=merge(SC_MaxRopeDia, LineConversion)
       
       for(i in 1:nrow(SC_MaxRopeDia)){
-        print(paste("Applying changes to vertical lines for ", i, " of ", nrow(SC_MaxRopeDia), " scenarios", sep=""))
+        message(paste("Applying changes to vertical lines for ", i, " of ", nrow(SC_MaxRopeDia), " scenarios", sep=""))
         
         ## constrain spatially
         MapRef_CrI=MapRef;
@@ -1500,7 +1501,7 @@ DecisionTool=function(
                                   Stage7s$Month %in% SC_MaxRopeDiaMonthsI, ]; dim(AffectedTraps)
         }
         if(nrow(Stage7s)!= (nrow(UnAffectedTraps) + nrow(AffectedTraps)) ) {
-          print("Error: Records lost in Stage7 splitting Unaffected and Affected")
+          message("Error: Records lost in Stage7 splitting Unaffected and Affected")
           break()
         }
         
@@ -1527,7 +1528,7 @@ DecisionTool=function(
     if(nrow(SC_BuoylineDevice)>0){
       
       for(i in 1:nrow(SC_BuoylineDevice)){
-        print(paste("Applying changes to vertical lines devices for ", i, " of ", nrow(SC_BuoylineDevice), " scenarios", sep=""))
+        message(paste("Applying changes to vertical lines devices for ", i, " of ", nrow(SC_BuoylineDevice), " scenarios", sep=""))
         
         ## constrain spatially
         MapRef_CrI=MapRef;
@@ -1573,7 +1574,7 @@ DecisionTool=function(
         }
         
         if(nrow(Stage7s)!= (nrow(UnAffectedTraps) + nrow(AffectedTraps)) ) {
-          print("Error: Records lost in Stage7 splitting Unaffected and Affected")
+          message("Error: Records lost in Stage7 splitting Unaffected and Affected")
           break()
         }
         
@@ -1590,7 +1591,7 @@ DecisionTool=function(
   #################################################################--
   ## 8.0 Merge line diameters with Threat
   if(Fold) {
-    print("8 Calculating gear configuration threat")
+    message("8 Calculating gear configuration threat")
     ## Line diameters are converted to Threat based on a model to be developed, possibly by polling the TRT.
     Stage8d=Stage7d;
     Stage8d$TrapsPerTrawl=round(Stage8d$TrapsPerTrawl)
@@ -1606,7 +1607,7 @@ DecisionTool=function(
     ### summary(Stage8d)
     
     if(length(which(is.na(Stage8d$Threat)))>0){ ## if there are any trawl lengths that don't match an endline
-      print("Error: Some gear configurations not matched to a threat score.  Error in Stage8d");
+      message("Error: Some gear configurations not matched to a threat score.  Error in Stage8d");
       break()
     }
     
@@ -1641,7 +1642,7 @@ DecisionTool=function(
      ### summary(Stage8s)
     
     if(length(which(is.na(Stage8s$Threat)))>0){ ## if there are any trawl lengths that don't match an endline
-      print("Error: Some gear configurations not matched to a threat score.  Error in Stage8s");
+      message("Error: Some gear configurations not matched to a threat score.  Error in Stage8s");
       break()
     }
     
@@ -1793,7 +1794,7 @@ DecisionTool=function(
   #############################################################--
   ## 9. Calculate Risk
   if(Fold) {
-    print("9 Calculating composite risk values")
+    message("9 Calculating composite risk values")
     ## Risk is calculated as the product of Threat and whale presence.
     if(HighResolution){
       WhaleModel=WhalesAt1Nm[ ,c("IecIndex_1", "GridID", "Month", "Density10Nm")] ## keep  model at 1Nm resolution
@@ -2032,10 +2033,10 @@ DecisionTool=function(
   
   #######################################################################################################--
   
-  print("Writing output")
+  message("Writing output")
   
   if(PrintDefaultMaps){
-    print("Writing Default Maps")
+    message("Writing Default Maps")
     
     pdf(file=paste(OutputDir, "_DefaultFigures.pdf", sep=""),
         width=11,height=9.5,paper="special")
@@ -2095,7 +2096,7 @@ DecisionTool=function(
   } ## print default maps
   
   if(PrintScenarioMaps){
-    print("Writing Scenario Maps")
+    message("Writing Scenario Maps")
     
     pdf(file=paste(OutputDir, "_ScenarioFigures.pdf", sep=""),
         width=11,height=9.5,paper="special")
@@ -2158,7 +2159,7 @@ DecisionTool=function(
   } ## print scenario maps
   
   if(exists("map1sRedistributedTrapDensity")) {
-    print("Writing Scenario Maps")
+    message("Writing Scenario Maps")
     
     pdf(file=paste(OutputDir, "_TrapRedistributionFigures.pdf", sep=""),
         width=11,height=9.5,paper="special")
@@ -2174,7 +2175,7 @@ DecisionTool=function(
   }
   
   if(PrintTables){
-    print("Writing Tables")
+    message("Writing Tables")
     
     pdf(file=paste(OutputDir, "_Tables.pdf", sep=""),
         width=11, height=8.5, paper="special")
@@ -2205,7 +2206,7 @@ DecisionTool=function(
   ### Add list of maps
   
   if(WriteMapSources){
-    print("Writing Map Sources")
+    message("Writing Map Sources")
     if(PrintDefaultMaps){
       save(
         Stage1d_TrapDensity_Px,
@@ -2275,7 +2276,7 @@ DecisionTool=function(
   }
   
   if(WriteOutputCsv) {
-    print("Writing Output to .csv")
+    message("Writing Output to .csv")
     
     write.csv(x=OutputData_Wide,
               file=paste(OutputDir, "_OutputData.csv", sep=""),

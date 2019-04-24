@@ -172,9 +172,8 @@ ui <- dashboardPage(
           checkboxInput(inputId='shapefile11',label="NEA_NR",value = F),
           checkboxInput(inputId='shapefile12',label="NEA_WGOM",value = F),
           checkboxInput(inputId='shapefile13',label="StatAreas",value = F),
-          checkboxInput(inputId='shapefile14',label="OffshoreA",value = F)
-         # checkboxInput(inputId='shapefile15',label="TinyWedge",value = F)
-          #checkboxInput(inputId='shapefile14',label="StatAreas",value = F)
+          checkboxInput(inputId='shapefile14',label="OffshoreA",value = F),
+          checkboxInput(inputId='shapefile16',label="NEAq Inshore",value = F)
         ) 
        )
       ),
