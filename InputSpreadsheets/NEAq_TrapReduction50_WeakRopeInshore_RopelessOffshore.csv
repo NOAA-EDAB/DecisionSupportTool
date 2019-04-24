@@ -1,0 +1,5 @@
+Action,LMA,State,StatArea,Fishery,Shapefile,Months,Percentage,TrawlRegulation,TrawlLen,MaxRopeDia,BuoylineDevice,RopelessDevice,TrapCap,Comment
+TrapReduction,,,,,,,0.5,,,,,,,
+MaxRopeDia,,,,,NEAq_Inshore,,,,,"1,700",,,,
+RopelessDevice,,,,,GB_100M_to_600M,,,,,,,AcousticRelease,,
+RopelessDevice,,,,,GOM_100M_to_EEZ,,,,,,,AcousticRelease,,
