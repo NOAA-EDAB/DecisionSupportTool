@@ -1,4 +1,4 @@
-# DecisionSupportTool
+# DecisionSupportTool v1.4
 Atlantic Large Whale Take Reduction Team Decision Support Tool
 
 ## What is this tool used for?
@@ -30,6 +30,7 @@ library(imager)
 library(shinyEffects)
 library(stringr)
 library(dplyr)
+library(geosphere)
 
 shiny::runGitHub("DecisionSupportTool", username = "NOAA-EDAB", ref = "master")
 
