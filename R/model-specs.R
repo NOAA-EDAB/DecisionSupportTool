@@ -52,6 +52,7 @@ Months <- 1:12
 Percentage <- ""
 Shapefile <- ""
 TrapCap <- ""
+
 #Data frame to hold 
 DF <- data.frame(Action = as.character(rep(NA,10)),
                  LMA = as.character(rep(NA, 10)),
@@ -68,6 +69,8 @@ DF <- data.frame(Action = as.character(rep(NA,10)),
                  RopelessDevice = as.character(rep(NA, 10)),
                  TrapCap = as.character(rep(NA, 10)),
                  Comment = as.character(rep(NA, 10)))
+
+DF_names <- names(DF)    
 
 # #get existing scenarios for listing as scenaerio inputs
 existing_input_csvs <- list.files(here::here("InputSpreadsheets"))

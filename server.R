@@ -205,15 +205,37 @@ function(input, output, session) {
         hot_col(col = "MaxRopeDia", type = "autocomplete", source = MaxRopeDia) %>% 
         hot_col(col = "BuoylineDevice", type = "autocomplete", source = BuoylineDevice) %>% 
         hot_col(col = "RopelessDevice", type = "autocomplete", source = RopelessDevice) %>% 
-        hot_col(col = "TrapCap", type = "autocomplete", source = TrapCap) 
-      
+        hot_col(col = "TrapCap", type = "autocomplete", source = TrapCap) %>% 
+        hot_col(col = "Comment", type = "numeric", strict = F)
       
       #Show filled template if input file is chosen
     } else {
       print(paste("Selected model:",input$existing_scenarios))
-   
+
       #For running models back to back in same session. 
-      DF <- read.csv(paste0(here::here("InputSpreadsheets",input$existing_scenarios),".csv"))
+      DF <- read.csv(paste0(here::here("InputSpreadsheets",input$existing_scenarios),".csv"),
+                     stringsAsFactors = FALSE)
+      
+      ## Keeps app from breaking with old scenario templates
+      Missing <- setdiff(DF_names, names(DF))  # Find names of missing columns
+      Extra <- names(DF)[!DF_names %in% intersect(names(DF), DF_names)]
+      Extra <- Extra[!is.na(Extra)]
+
+      ## Designed to pass a warning to shiny, but not finished yet# 
+      # validate_scenario_template <- function() {
+      #   if (input$existing_scenarios != "" & length(Extra) > 0){
+      #     cat("Please check your template. The following columns are either deprecated or misspelled:\n", 
+      #         paste(Extra, collapse = ", "))
+      #   } else {
+      #     NULL
+      #   }
+      # }
+      # validate(
+      #   validate_scenario_template()
+      # ) 
+      
+      DF[Missing] <- NA                    # Add them, filled with '0's
+      DF <- DF[DF_names]
 
       rhandsontable(DF, stretchH = "all", readOnly  = F) %>% 
         hot_cols(colWidths = c(100,50)) %>% 
@@ -230,7 +252,8 @@ function(input, output, session) {
         hot_col(col = "MaxRopeDia", type = "autocomplete", source = MaxRopeDia) %>% 
         hot_col(col = "BuoylineDevice", type = "autocomplete", source = BuoylineDevice) %>% 
         hot_col(col = "RopelessDevice", type = "autocomplete", source = RopelessDevice) %>% 
-        hot_col(col = "TrapCap", type = "autocomplete", source = TrapCap)
+        hot_col(col = "TrapCap", type = "autocomplete", source = TrapCap) %>%
+        hot_col(col = "Comment", type = "numeric", strict = F)
     }
   })
   
@@ -389,6 +412,7 @@ function(input, output, session) {
       NULL
     }
   }
+  
   
   #Implement the validation function and make the filenames reactive  
   matched_plots <- reactive({
