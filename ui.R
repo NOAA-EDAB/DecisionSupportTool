@@ -14,6 +14,7 @@ library(imager)
 library(shinyEffects)
 library(stringr)
 library(dplyr)
+library(geosphere)
 
 #Source helper functions
 r.dir <- here::here("R")
@@ -29,7 +30,7 @@ setZoom <- shinyEffects::setZoom
 #User interface
 
 ui <- dashboardPage(
-  dashboardHeader(title = "ALW TRT Scenario Planning", titleWidth = 300),
+  dashboardHeader(title = "ALW TRT Scenario Planning v1.4", titleWidth = 350),
   dashboardSidebar(    
     sidebarMenu(
     menuItem("Specify Model", tabName = "specify_model", icon = icon("dashboard")),
