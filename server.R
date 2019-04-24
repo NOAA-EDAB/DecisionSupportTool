@@ -205,8 +205,8 @@ function(input, output, session) {
         hot_col(col = "MaxRopeDia", type = "autocomplete", source = MaxRopeDia) %>% 
         hot_col(col = "BuoylineDevice", type = "autocomplete", source = BuoylineDevice) %>% 
         hot_col(col = "RopelessDevice", type = "autocomplete", source = RopelessDevice) %>% 
-        hot_col(col = "TrapCap", type = "autocomplete", source = TrapCap)
-
+        hot_col(col = "TrapCap", type = "autocomplete", source = TrapCap) 
+      
       
       #Show filled template if input file is chosen
     } else {
