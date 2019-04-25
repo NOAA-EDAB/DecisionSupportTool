@@ -1,5 +1,5 @@
-Action,LMA,State,StatArea,Fishery,Shapefile,Months,Percentage,TrawlRegulation,TrawlLen,MaxRopeDia,BuoylineDevice,RopelessDevice,TrapCap,Comment
+﻿Action,LMA,State,StatArea,Fishery,Shapefile,Months,Percentage,TrawlRegulation,TrawlLen,MaxRopeDia,BuoylineDevice,RopelessDevice,TrapCap,Comment
 TrapReduction,,,,,,,0.5,,,,,,,
-MaxRopeDia,,,,,NEAq_Inshore,,,,,"1,700",,,,
+MaxRopeDia,,,,,,,,,,"1,700",,,,
 BuoylineDevice,,,,,GB_100M_to_600M,,,,,,"1,700@100m",,,
 BuoylineDevice,,,,,GOM_100M_to_EEZ,,,,,,"1,700@100m",,,

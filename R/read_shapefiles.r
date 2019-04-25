@@ -22,6 +22,7 @@ MASS_RA <-  rgdal::readOGR(dsn = shapefilePath, layer = 'Massachusetts_Restricte
 MASS_RANE <-  rgdal::readOGR(dsn = shapefilePath, layer = 'Massachusetts_Restricted_Area_North_Expansion',verbose = F)
 NEA_NR <-  rgdal::readOGR(dsn = shapefilePath, layer = 'NEA_Nantucket_Rectangle',verbose = F)
 NEA_WGOM <-  rgdal::readOGR(dsn = shapefilePath, layer = 'NEA_WGOM_Area',verbose = F)
+NEAq_Inshore<-  rgdal::readOGR(dsn = shapefilePath, layer = 'NEAq_Inshore',verbose = F)
 #SA_DT <-  rgdal::readOGR(dsn = shapefilePath, layer = 'StatAreas_DecisionTool',verbose = F)
 #SA_537 <-  rgdal::readOGR(dsn = shapefilePath, layer = 'Statistical_Area_537',verbose = F)
 #TinyWedge <-  rgdal::readOGR(dsn = shapefilePath, layer = 'TinyWedge_LMA1',verbose = F)

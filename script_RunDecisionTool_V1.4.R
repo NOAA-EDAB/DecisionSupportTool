@@ -32,21 +32,19 @@ HD=here::here()
 source(paste(HD, "function_DecisionSupportTool_V1.4.R", sep="/"))
 
 ## call function
+
 DecisionTool(
-  HomeDir=HD, ## home directory for subdirectories
-  InputSpreadsheetName="All_5pots_sleeves_lt_100m.csv", ## csv input file with specified criteria
-  HighResolution=FALSE, ## Option to run in HighResolution mode. Slows model drammatically, not fully tested
-  PrintTables=TRUE, ## print pdf tables of results
-  PrintDefaultMaps=F, ## print maps of default states; turned off to speed model run
-  PrintScenarioMaps=F, ## print maps fo scenario states; turned off to speed model run
-  WriteMapSources=TRUE, ## write output used for producing maps to .Rdata file. 
-  ##    Only works if both PrintDefaultMaps and PrintScenarioMaps =TRUE
-  WriteOutputCsv=TRUE ## write results in PrintTables as csv file for further analysis
-  
-  
+HomeDir=HD,  ## home directory for subdirectories
+InputSpreadsheetName="TrapReduction_99_NantucketRect_MaxRopeDia_LMA2_MA.csv",  ## csv input file with specified criteria
+HighResolution=FALSE,  ## Option to run in HighResolution mode. Slows model drammatically  not fully tested
+PrintTables=TRUE,  ## print pdf tables of results
+PrintDefaultMaps=T,  ## print maps of default states; turned off to speed model run
+PrintScenarioMaps=T,  ## print maps fo scenario states; turned off to speed model run
+WriteMapSources=TRUE,  ## write output used for producing maps to .Rdata file. 
+##    Only works if both PrintDefaultMaps and PrintScenarioMaps =TRUE
+WriteOutputCsv=TRUE ## write results in PrintTables as csv file for further analysis
+
 )
-
-
 ## To Do list:
 ## Trap Redistribution
 ##  Even
