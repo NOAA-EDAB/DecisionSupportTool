@@ -14,6 +14,7 @@ library(imager)
 library(shinyEffects)
 library(stringr)
 library(dplyr)
+library(geosphere)
 
 #Source helper functions
 r.dir <- here::here("R")
@@ -29,7 +30,7 @@ setZoom <- shinyEffects::setZoom
 #User interface
 
 ui <- dashboardPage(
-  dashboardHeader(title = "ALW TRT Scenario Planning", titleWidth = 300),
+  dashboardHeader(title = "ALW TRT Scenario Planning v1.4", titleWidth = 350),
   dashboardSidebar(    
     sidebarMenu(
     menuItem("Specify Model", tabName = "specify_model", icon = icon("dashboard")),
@@ -171,9 +172,8 @@ ui <- dashboardPage(
           checkboxInput(inputId='shapefile11',label="NEA_NR",value = F),
           checkboxInput(inputId='shapefile12',label="NEA_WGOM",value = F),
           checkboxInput(inputId='shapefile13',label="StatAreas",value = F),
-          checkboxInput(inputId='shapefile14',label="OffshoreA",value = F)
-         # checkboxInput(inputId='shapefile15',label="TinyWedge",value = F)
-          #checkboxInput(inputId='shapefile14',label="StatAreas",value = F)
+          checkboxInput(inputId='shapefile14',label="OffshoreA",value = F),
+          checkboxInput(inputId='shapefile16',label="NEAq Inshore",value = F)
         ) 
        )
       ),
