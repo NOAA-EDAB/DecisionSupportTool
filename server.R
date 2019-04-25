@@ -265,6 +265,9 @@ function(input, output, session) {
     param$Fishery <- as.character(param$Fishery)
     param$Shapefile <- as.character(param$Shapefile)
     param$Months <- as.character(param$Months)
+    param$MaxRopeDia <- as.character(param$MaxRopeDia)
+    param$BuoylineDevice <- as.character(param$BuoylineDevice)
+    param$RopelessDevice <- as.character(param$RopelessDevice)
     param <- param %>% dplyr::filter(Action != "")
     
     
