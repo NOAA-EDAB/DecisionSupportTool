@@ -15,7 +15,7 @@ library(imager)
 library(shinyEffects)
 library(stringr)
 library(dplyr)
-
+library(geosphere)
 #Source helper functions
 r.dir <- here::here("R")
 
@@ -34,11 +34,11 @@ source(paste(HD, "function_DecisionSupportTool_V1.4.R", sep="/"))
 ## call function
 DecisionTool(
   HomeDir=HD, ## home directory for subdirectories
-  InputSpreadsheetName="NEAq_TrapReduction50_WeakRopeEverywhere_TagOffshore.csv", ## csv input file with specified criteria
+  InputSpreadsheetName="All_5pots_sleeves_lt_100m.csv", ## csv input file with specified criteria
   HighResolution=FALSE, ## Option to run in HighResolution mode. Slows model drammatically, not fully tested
   PrintTables=TRUE, ## print pdf tables of results
-  PrintDefaultMaps=TRUE, ## print maps of default states; turned off to speed model run
-  PrintScenarioMaps=TRUE, ## print maps fo scenario states; turned off to speed model run
+  PrintDefaultMaps=F, ## print maps of default states; turned off to speed model run
+  PrintScenarioMaps=F, ## print maps fo scenario states; turned off to speed model run
   WriteMapSources=TRUE, ## write output used for producing maps to .Rdata file. 
   ##    Only works if both PrintDefaultMaps and PrintScenarioMaps =TRUE
   WriteOutputCsv=TRUE ## write results in PrintTables as csv file for further analysis
