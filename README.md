@@ -30,6 +30,7 @@ library(imager)
 library(shinyEffects)
 library(stringr)
 library(dplyr)
+library(rmarkdown)
 library(DT)
 
 shiny::runGitHub("DecisionSupportTool", username = "NOAA-EDAB", ref = "master")
